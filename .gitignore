@@ -1,0 +1,28 @@
+# package directories
+node_modules
+node_modules/*
+jspm_packages
+
+# Serverless directories
+.serverless
+
+# esbuild directories
+.esbuild
+
+# yarn
+.yarn
+.yarnrc.yml
+yarn.lock
+yarn-error.log
+
+# env
+.env
+
+# ts
+src/lambda/*
+
+# test
+__tests__/env.ts
+
+# mac
+.DS_Store

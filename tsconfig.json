@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext"], // 사용 가능한 라이브러리를 설정 / ESNext: 최신 버전의 ECMAScript
+    "moduleResolution": "node",
+    "noUnusedLocals": true, // 사용되지 않은 지역 변수 경고
+    "noUnusedParameters": false, // 사용되지 않은 매개변수 경고
+    "removeComments": true, // js 파일에서 주석 제거
+    "sourceMap": true,
+    "skipLibCheck": true, 
+    "module": "commonjs", // 컴파일된 js의 모듈 시스템
+    "esModuleInterop": true, 
+    "baseUrl": ".",
+    "paths": {},
+    "target": "ESNext", // 컴파일된 js의 ECMAScript 버전
+    "outDir": "build", // 컴파일된 파일이 저장될 디렉토리
+  },
+  // 컴파일 파일 지정
+  "include": ["src/**/*.ts"], 
+  "exclude": [
+    "src/ts/**/*.test.ts",
+    "node_modules/**/*",
+    ".serverless/**/*",
+    "_warmup/**/*",
+    ".vscode/**/*",
+  ],
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
+}

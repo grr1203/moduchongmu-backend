@@ -1,0 +1,106 @@
+frameworkVersion: '3'
+service: moduchongmu
+app: moduchongmu
+useDotenv: true
+variablesResolutionMode: 20210326
+package:
+  exclude:
+    - src/ts/**
+  individually: true
+  excludeDevDependencies: true
+provider:
+  deploymentMethod: direct
+  name: aws
+  runtime: nodejs20.x
+  iam:
+    role: DefaultRole
+  httpApi:
+    cors:
+      allowedHeaders:
+        - Content-Type
+        - Authorization
+    authorizers:
+      Authorizer:
+        type: request
+        functionName: auth_authorizer
+        identitySource: 
+          - $request.header.Authorization
+        enableSimpleResponses: true
+  endpointType: REGIONAL
+  stage: ${env:STAGE, "dev"}
+  tags:
+    Service: ${self:service}
+    Application: ${self:service}
+    Environment: ${env:STAGE, "dev"}
+  stackTags:
+    Application: ${self:service}
+    Service: ${self:service}
+    Environment: ${env:STAGE, "dev"}
+  versionFunctions: false
+  region: ap-northeast-2
+  stackName: ${self:service}-${env:STAGE, "dev"}-${env:VER, "1"}-serverless
+  timeout: 10
+  environment:
+    app: ${self:service}
+    TZ: +09:00
+    region: ${opt:region, "ap-northeast-2"}
+    stage: ${env:STAGE, "dev"}
+    version: ${env:VER, "1"}
+    http_api_gateway_id:
+      Ref: HttpApi
+    NODE_OPTIONS: --enable-source-maps
+
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    external:
+      ['pg', 'pg-query-stream', 'sqlite3', 'better-sqlite3', 'oracledb', 'tedious', 'mysql']
+
+  jest:
+  alerts:
+    dashboards: false
+plugins:
+  - serverless-plugin-log-subscription
+  - serverless-esbuild
+
+resources: # CloudFormation template syntax
+  Resources:
+    DefaultRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:service}-${env:STAGE, "dev"}-${env:VER, "1"}-LambdaExcutionRole
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+          - arn:aws:iam::aws:policy/AmazonS3FullAccess
+          - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+          - arn:aws:iam::aws:policy/AmazonSESFullAccess
+        Policies:
+          - PolicyName: myPolicyName
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - rds-db:connect
+                    - logs:*
+                    - athena:*
+                    - ssm:*
+                    - execute-api:*
+                    - secretsmanager:*
+                    - lambda:*
+                    - sns:*
+                    - sqs:*
+                  Resource: '*'
+
+# functions:
+  
