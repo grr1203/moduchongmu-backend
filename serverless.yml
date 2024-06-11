@@ -99,6 +99,39 @@ resources: # CloudFormation template syntax
                     - sns:*
                     - sqs:*
                   Resource: '*'
-
-# functions:
+    
+functions:
+  test:
+    handler: build/test/get.handler
+    events:
+      - httpApi:
+          path: /test
+          method: get
+  auth_authorizer:
+    handler: build/auth/authorizer.handler
+    events: []
+  user_get:
+    handler: build/user/get.handler
+    events:
+      - httpApi:
+          path: /user
+          method: get
+          authorizer:             
+            name: Authorizer
+  user_put:
+    handler: build/user/put.handler
+    events:
+      - httpApi:
+          path: /user
+          method: put
+          authorizer: 
+            name: Authorizer
+  user_delete:
+    handler: build/user/delete.handler
+    events:
+      - httpApi:
+          path: /user
+          method: delete
+          authorizer: 
+            name: Authorizer
   
