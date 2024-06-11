@@ -41,14 +41,12 @@ provider:
   stackName: ${self:service}-${env:STAGE, "dev"}-${env:VER, "1"}-serverless
   timeout: 10
   environment:
-    app: ${self:service}
-    TZ: +09:00
-    region: ${opt:region, "ap-northeast-2"}
-    stage: ${env:STAGE, "dev"}
-    version: ${env:VER, "1"}
-    http_api_gateway_id:
-      Ref: HttpApi
+    APP: ${self:service}
+    STAGE: ${env:STAGE, "dev"}
     NODE_OPTIONS: --enable-source-maps
+    # http_api_gateway_id:
+    #   Ref: HttpApi
+    JWT_SECRET_KEY: ${ssm:/${self:service}/${env:STAGE, "dev"}/jwt_secret_key}
 
 custom:
   esbuild:

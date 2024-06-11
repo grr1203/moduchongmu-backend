@@ -2,7 +2,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { S3Client, GetObjectCommand, HeadObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 
 const client = new S3Client({ region: 'ap-northeast-2' });
-const Bucket = `${process.env.app}-${process.env.stage}-bucket`;
+const Bucket = `${process.env.APP}-${process.env.STAGE}-bucket`;
 
 export const getPresignedPostUrl = async (Key: string) => {
   const command = new PutObjectCommand({ Bucket, Key });
