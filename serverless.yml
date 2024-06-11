@@ -110,6 +110,15 @@ functions:
   auth_authorizer:
     handler: build/auth/authorizer.handler
     events: []
+  api_docs_get:
+      handler: build/api/docs/get.handler
+      events:
+        - httpApi:
+            path: /api/docs
+            method: get
+      package:
+        include:
+          - apiDocs.yml
   user_get:
     handler: build/user/get.handler
     events:

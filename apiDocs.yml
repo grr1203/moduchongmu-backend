@@ -1,0 +1,165 @@
+openapi: 3.0.0
+info:
+  title: 모두의 총무
+  description: 모두의 총무 API Docs
+  version: 0.0.1
+  contact:
+    name: API support
+    url: gyrms9412@naver.com
+    email: gyrms9412@naver.com
+  license:
+    name: MIT
+    url: https://spdx.org/licenses/MIT
+servers:
+  - url: 'https://[api-gateway-id].execute-api.ap-northeast-2.amazonaws.com/stag'
+    description: Stag server
+paths:
+  # test
+  /test:
+    get:
+      summary: test
+      description: 테스트 함수
+      operationId: test/get
+      tags:
+        - test
+      parameters:
+        - name: name
+          in: query
+          description: test parameter 1
+          required: true
+          schema:
+            type: string
+        - name: age
+          in: query
+          description: test parameter 2
+          required: true
+          schema:
+            type: integer
+        - name: favoriteFood
+          in: query
+          description: test parameter 3
+          schema:
+            enum:
+              - pizza
+              - taco
+              - fries
+      responses:
+        '200':
+          description: test success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  result:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: test output 1
+                      age:
+                        type: integer
+                        description: test output 2
+        '500':
+          description: 'code: Internal_Server_Error'
+  
+  # User
+  /user:
+    get:
+      summary: user
+      description: User 정보를 조회한다. (token 정보로 DB 조회)
+      operationId: user/get
+      tags:
+        - user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: |
+            유저 데이터 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+
+    put:
+      summary: user
+      description: User 정보를 수정한다.
+      operationId: user/put
+      tags:
+        - user
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userName:
+                  type: string
+                  description: 유저 이름 수정 요청시
+                marketingAgreed:
+                  type: boolean
+                  description: 마케팅 동의 여부 수정 요청시
+      responses:
+        '200':
+          description: 수정된 유저 데이터 전달
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                      
+    delete:
+      summary: user
+      description: accessToken의 claim을 참조해 User를 삭제한다.
+      operationId: user/delete
+      tags:
+        - user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 삭제 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userEmail:
+                    type: string
+                    description: 삭제된 유저의 이메일
+                      
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    User:
+      type: object
+      properties:
+        userEmail:
+          type: string
+        userName:
+          type: string
+        registerType:
+          type: string
+        registeredDate:
+          type: string
+        lastLoginDate:
+          type: string
+        marketingAgreed:
+          type: number
+        
