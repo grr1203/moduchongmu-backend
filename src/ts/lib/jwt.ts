@@ -4,9 +4,9 @@ import dayjs from 'dayjs';
 import { APIGatewayProxyEventV2 } from 'aws-lambda';
 
 // openssl rand -hex 128
-const secretKey: string = process.env.jwt_secret_key || 'temp_secret_key_monthconcert';
+const secretKey: string = process.env.JWT_SECRET_KEY || 'temp_secret_key_monthconcert';
 
-export const USER_JWT_CONTENTS = ['idx', 'uid', 'user_email', 'user_name', 'register_type', 'registered_date'];
+export const USER_JWT_CONTENTS = ['idx', 'userEmail', 'userName', 'registerType', 'registeredDate', 'lastLoginDate'];
 
 export const generateJwt = (data: object, exp: string | number) => {
   return jwt.sign({ ...data }, secretKey, { expiresIn: exp });
@@ -30,35 +30,35 @@ export const generateUserAccessToken = async (userIdx: number, exp = 60 * 30) =>
   const user = await mysqlUtil.getOne('tb_user', [...USER_JWT_CONTENTS], { idx: userIdx });
   if (!user) throw new Error(`user not found: userIdx = ${userIdx}`);
 
-  const jwt_item = { first_jwt_iat: dayjs().format('YYYY-MM-DD HH:mm:ss') };
+  const jwtItem = { first_jwt_iat: dayjs().format('YYYY-MM-DD HH:mm:ss') };
   for (const content of USER_JWT_CONTENTS) {
     const value = user[content];
     if (value === undefined) {
-      console.log(`failed to make jwt key with jwt_content, users ${content} is undefined`);
+      console.log(`failed to make jwt key with jwt content, users ${content} is undefined`);
       throw new Error(`failed to make jwt key`);
     }
-    jwt_item[content] = value;
+    jwtItem[content] = value;
   }
-  return generateJwt(jwt_item, exp);
+  return generateJwt(jwtItem, exp);
 };
 
-export const generateUserRefreshToken = async (lambda_event: APIGatewayProxyEventV2, user_idx: number) => {
-  let user_ip = lambda_event.requestContext.http.sourceIp;
-  console.log(`user_ip = ${user_ip}`);
-  const jwt_item = { ip: user_ip, idx: user_idx };
-  const token = generateJwt(jwt_item, '180d');
+export const generateUserRefreshToken = async (lambdaEvent: APIGatewayProxyEventV2, userIdx: number) => {
+  let userIp = lambdaEvent.requestContext.http.sourceIp;
+  console.log(`userIp = ${userIp}`);
+  const jwtItem = { ip: userIp, idx: userIdx };
+  const token = generateJwt(jwtItem, '180d');
 
   try {
-    await mysqlUtil.update('tb_user', { refresh_token: token }, { idx: user_idx });
-    console.log('successfully update refresh_token');
+    await mysqlUtil.update('tb_user', { refreshToken: token }, { idx: userIdx });
+    console.log('successfully update refresh token');
   } catch (e) {
     console.log(`falied to put refresh token`);
   }
   return token;
 };
 
-export const generateTokens = async (lambda_event: APIGatewayProxyEventV2, userIdx: number) => {
+export const generateTokens = async (lambdaEvent: APIGatewayProxyEventV2, userIdx: number) => {
   const accessToken = await generateUserAccessToken(userIdx);
-  const refreshToken = await generateUserRefreshToken(lambda_event, userIdx);
+  const refreshToken = await generateUserRefreshToken(lambdaEvent, userIdx);
   return { accessToken, refreshToken };
 };

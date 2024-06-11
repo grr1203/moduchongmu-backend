@@ -7,7 +7,7 @@ import util from 'util';
 const testEmail = 'gyrms9412@naver.com';
 
 export async function localLogin(userEmail: string = testEmail): Promise<string> {
-  const user = await mysqlUtil.getOne('tb_user', USER_JWT_CONTENTS, { user_email: userEmail });
+  const user = await mysqlUtil.getOne('tb_user', USER_JWT_CONTENTS, { userEmail });
   return (await generateTokens(createPublicLambdaEvent({}), user!.idx)).accessToken;
 }
 
