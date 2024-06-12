@@ -91,7 +91,9 @@ paths:
 
     put:
       summary: user
-      description: User 정보를 수정한다.
+      description: |
+        - userName이 없는 유저에게 userName을 부여하고 회원가입 처리를 완료한다.
+        - User 정보를 수정한다.
       operationId: user/put
       tags:
         - user
@@ -109,6 +111,9 @@ paths:
                 marketingAgreed:
                   type: boolean
                   description: 마케팅 동의 여부 수정 요청시
+                statusMessage:
+                  type: string
+                  description: 상태 메시지 수정 요청시
       responses:
         '200':
           description: 수정된 유저 데이터 전달
@@ -139,7 +144,175 @@ paths:
                   userEmail:
                     type: string
                     description: 삭제된 유저의 이메일
-                      
+
+  # Signin
+  /signin/apple:
+    post:
+      summary: signin
+      description: |
+        - Apple 회원가입 / 로그인
+        - 회원가입 시 response의 processType: signup
+          이후 PUT user API로 userName을 부여해야 회원가입 완료
+        - 로그인 시 response의 processType: signin
+      operationId: signin/apple/post
+      tags:
+        - signin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: Apple에서 발급한 identityToken
+      responses:
+        '200':
+          description: 회원가입 / 로그인 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  processType:
+                    type: string
+                    description: signup or signin
+                  accessToken:
+                    type: string
+                    description: 로그인 성공 시 발급되는 accessToken
+                  refreshToken:
+                    type: string
+                    description: 로그인 성공 시 발급되는 refreshToken
+        '401':
+          description: 'code: Verification_Failed'
+        '500':
+          description: 'code: Internal_Server_Error'
+  
+  /signin/google:
+    post:
+      summary: signin
+      description: |
+        - Google 회원가입 / 로그인
+        - 회원가입 시 response의 processType: signup
+          이후 PUT user API로 userName을 부여해야 회원가입 완료
+        - 로그인 시 response의 processType: signin
+      operationId: signin/google/post
+      tags:
+        - signin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: Google에서 발급한 id Token
+      responses:
+        '200':
+          description: 회원가입 / 로그인 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  processType:
+                    type: string
+                    description: signup or signin
+                  accessToken:
+                    type: string
+                    description: 로그인 성공 시 발급되는 accessToken
+                  refreshToken:
+                    type: string
+                    description: 로그인 성공 시 발급되는 refreshToken
+        '401':
+          description: 'code: Verification_Failed'
+        '500':
+          description: 'code: Internal_Server_Error'
+
+  /signin/kakao:
+    post:
+      summary: signin
+      description: |
+        - Kakao 회원가입 / 로그인
+        - 회원가입 시 response의 processType: signup
+          이후 PUT user API로 userName을 부여해야 회원가입 완료
+        - 로그인 시 response의 processType: signin
+      operationId: signin/kakao/post
+      tags:
+        - signin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: Kakao에서 발급한 access token
+      responses:
+        '200':
+          description: 회원가입 / 로그인 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  processType:
+                    type: string
+                    description: signup or signin
+                  accessToken:
+                    type: string
+                    description: 로그인 성공 시 발급되는 accessToken
+                  refreshToken:
+                    type: string
+                    description: 로그인 성공 시 발급되는 refreshToken
+        '401':
+          description: 'code: Verification_Failed'
+        '500':
+          description: 'code: Internal_Server_Error'
+  
+  /signin/naver:
+    post:
+      summary: signin
+      description: |
+        - Naver 회원가입 / 로그인
+        - 회원가입 시 response의 processType: signup
+          이후 PUT user API로 userName을 부여해야 회원가입 완료
+        - 로그인 시 response의 processType: signin
+      operationId: signin/naver/post
+      tags:
+        - signin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: Naver에서 발급한 access token
+      responses:
+        '200':
+          description: 회원가입 / 로그인 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  processType:
+                    type: string
+                    description: signup or signin
+                  accessToken:
+                    type: string
+                    description: 로그인 성공 시 발급되는 accessToken
+                  refreshToken:
+                    type: string
+                    description: 로그인 성공 시 발급되는 refreshToken
+        '401':
+          description: 'code: Verification_Failed'
+        '500':
+          description: 'code: Internal_Server_Error'
 
 components:
   securitySchemes:
