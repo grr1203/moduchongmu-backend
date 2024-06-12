@@ -8,18 +8,20 @@ const parameter = {
   properties: {
     userName: { type: 'string' },
     marketingAgreed: { type: 'boolean' },
+    statusMessage: { type: 'string' },
   },
   required: [],
 } as const;
 
 export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<{ [key: string]: any }>) => {
   console.log('[event]', event);
-  const { userName, marketingAgreed } = JSON.parse(event.body) as FromSchema<typeof parameter>;
+  const { userName, marketingAgreed, statusMessage } = JSON.parse(event.body) as FromSchema<typeof parameter>;
   const userIdx = event.requestContext.authorizer.lambda.idx;
 
   const updateObject: { [key: string]: any } = {};
   userName && typeof userName === 'string' && (updateObject.userName = userName);
   marketingAgreed && typeof marketingAgreed === 'boolean' && (updateObject.marketingAgreed = marketingAgreed);
+  statusMessage && typeof statusMessage === 'string' && (updateObject.statusMessage = statusMessage);
   await mysqlUtil.update('tb_user', updateObject, { idx: userIdx });
 
   const userColumns = [...USER_JWT_CONTENTS, 'marketing_agreed'];
