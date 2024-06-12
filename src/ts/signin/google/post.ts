@@ -8,20 +8,20 @@ import { verifyGoogleCode } from '../../lib/loginUtil';
 const parameter = {
   type: 'object',
   properties: {
-    idToken: { type: 'string' }, // google에서 발급한 id token
+    token: { type: 'string' }, // google에서 발급한 id token
   },
-  required: ['code'],
+  required: ['token'],
 } as const;
 
 export const handler = async (event: APIGatewayProxyEventV2) => {
   console.log('[event]', event);
-  const { idToken } = JSON.parse(event.body) as FromSchema<typeof parameter>;
+  const { token } = JSON.parse(event.body) as FromSchema<typeof parameter>;
 
   try {
     // google server에서 발급한 id token 검증 및 payload 조회
     let userEmail: string;
     try {
-      const { email } = await verifyGoogleCode(idToken);
+      const { email } = await verifyGoogleCode(token);
       userEmail = email;
     } catch (err) {
       console.log('[verifyGoogleCode failed]', err);

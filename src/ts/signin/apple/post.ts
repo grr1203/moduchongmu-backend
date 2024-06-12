@@ -8,20 +8,20 @@ import { USER_REGISTER_TYPE } from '../../lib/constants/user';
 const parameter = {
   type: 'object',
   properties: {
-    identityToken: { type: 'string' }, // apple에서 발급한 identityToken (email 포함)
+    token: { type: 'string' }, // apple에서 발급한 identityToken (email 포함)
   },
-  required: ['identityToken'],
+  required: ['token'],
 } as const;
 
 export const handler = async (event: APIGatewayProxyEventV2) => {
   console.log('[event]', event);
-  const { identityToken } = JSON.parse(event.body) as FromSchema<typeof parameter>;
+  const { token } = JSON.parse(event.body) as FromSchema<typeof parameter>;
 
   try {
     // apple server에서 발급한 identityToken 검증 및 payload 조회
     let userEmail: string;
     try {
-      const jwtClaims = await verifyAppleToken(identityToken);
+      const jwtClaims = await verifyAppleToken(token);
       if (Object.keys(jwtClaims).length === 0) throw Error('jwtClaims is empty');
       console.log('[jwtClaims]', jwtClaims);
       userEmail = jwtClaims.email;
