@@ -26,7 +26,7 @@ export const verifyJwtKey = (
   }
 };
 
-export const generateUserAccessToken = async (userIdx: number, exp = 60 * 30) => {
+export const generateUserAccessToken = async (userIdx: number, exp = 60 * 60) => {
   const user = await mysqlUtil.getOne('tb_user', [...USER_JWT_CONTENTS], { idx: userIdx });
   if (!user) throw new Error(`user not found: userIdx = ${userIdx}`);
 
