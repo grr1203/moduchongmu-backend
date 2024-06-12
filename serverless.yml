@@ -143,4 +143,16 @@ functions:
           method: delete
           authorizer: 
             name: Authorizer
+  signin_apple_post:
+    handler: build/signin/apple/post.handler
+    events:
+      - httpApi:
+          path: /signin/apple
+          method: post
+  signin_google_post:
+    handler: build/signin/google/post.handler
+    events:
+      - httpApi:
+          path: /signin/google
+          method: post
   

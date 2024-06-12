@@ -4,7 +4,7 @@ import jwkToPem from 'jwk-to-pem';
 
 // Apple
 const APPLE_ISSUER = 'https://appleid.apple.com';
-const APPLE_IDENTIFIER = ['com.newservice.web', 'com.reconlabs.newservice'];
+const APPLE_IDENTIFIER = ['com.dolanap.moduchongmu'];
 
 // https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_rest_api/authenticating_users_with_sign_in_with_apple
 export async function verifyAppleToken(identityToken: string) {
@@ -42,46 +42,14 @@ export async function verifyAppleToken(identityToken: string) {
 }
 
 // Google
-const GOOGLE_CLIENT_ID = process.env.google_web_client_id; // web
-const GOOGLE_CLIENT_SECRET = process.env.google_client_secret;
-
-export async function verifyGoogleCode(
-  client: string,
-  { code, token }: { code?: string; token?: string }, // web - code, ios - token
-  redirectUri: string
-) {
-  let idToken: string;
-
-  if (client === 'web') {
-    console.log('get google token', code, redirectUri, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET)
-    const res = await axios.post(
-      `https://oauth2.googleapis.com/token?code=${code}&client_id=${GOOGLE_CLIENT_ID}&client_secret=${GOOGLE_CLIENT_SECRET}&redirect_uri=${redirectUri}&grant_type=authorization_code`,
-      {},
-      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-    );
-    console.log('get google token response data', res.data);
-    idToken = res.data.id_token;
-  } else if (client === 'ios') {
-    idToken = token!;
-  } else {
-    idToken = '';
-  }
-
-  console.log('idToken', idToken);
+export async function verifyGoogleCode(idToken: string) {
+  // ID Token으로 user data 조회
   const res = await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`);
-  console.log('get google user info', res.data);
+  console.log('[get google user info response]', res);
+  const { email, name } = res.data;
 
-  return { email: res.data.email, name: res.data.name };
+  return { email, name };
 }
-
-// export async function verifyGoogleCode(idToken: string) {
-//   // ID Token으로 user data 조회
-//   const res = await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`);
-//   console.log('[get google user info response]', res);
-//   const { email, name } = res.data;
-
-//   return { email, name };
-// }
 
 // Naver
 // const NAVER_CLIENT_ID = 'tExjEltbseFHIPqyF_1A';
