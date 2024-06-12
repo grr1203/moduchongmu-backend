@@ -22,6 +22,11 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   userName && typeof userName === 'string' && (updateObject.userName = userName);
   marketingAgreed && typeof marketingAgreed === 'boolean' && (updateObject.marketingAgreed = marketingAgreed);
   statusMessage && typeof statusMessage === 'string' && (updateObject.statusMessage = statusMessage);
+
+  // userName unique check
+  const existUserName = await mysqlUtil.getOne('tb_user', ['idx'], { userName });
+  if (existUserName) return { statusCode: 400, body: JSON.stringify({ code: 'UserName_Exist' }) };
+
   await mysqlUtil.update('tb_user', updateObject, { idx: userIdx });
 
   const userColumns = [...USER_JWT_CONTENTS, 'marketing_agreed'];
