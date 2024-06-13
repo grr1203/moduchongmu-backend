@@ -218,10 +218,12 @@ async function updateTimestamp(table: string, column: string, where: { [key: str
 }
 
 // searchString 포함된 단어 검색
-async function search(table: string, column: string, searchString: string) {
+async function search(table: string, columns: string[], searchString: string) {
   db = db || (await getNewDBInstance());
-  console.log(`mysql search() table: ${table}, column: ${column}, searchString: ${searchString}`);
-  let queryPromise = db.raw(`SELECT * FROM ${table} WHERE ${column} LIKE '%${searchString}%'`);
+  console.log(`mysql search() table: ${table}, column: ${columns.join(', ')}, searchString: ${searchString}`);
+  let query = `SELECT * FROM ${table} WHERE `;
+  query += columns.map((column) => `${column} LIKE '%${searchString}%'`).join(' OR ');
+  let queryPromise = db.raw(query);
   const rows = await safeQueryPromise(queryPromise);
   console.log(`mysql search result: `, rows[0]);
   return rows[0];
