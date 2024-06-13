@@ -161,6 +161,14 @@ functions:
           method: post
   
   # Friend
+  friend_search_get:
+    handler: build/friend/search/get.handler
+    events:
+      - httpApi:
+          path: /friend/search
+          method: get
+          authorizer: 
+            name: Authorizer
   friend_post:
     handler: build/friend/post.handler
     events:

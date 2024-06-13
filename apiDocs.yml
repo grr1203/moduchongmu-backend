@@ -315,6 +315,43 @@ paths:
           description: 'code: Internal_Server_Error'
   
   # Friend
+  /friend/search:
+    get:
+      summary: friend
+      description: |
+        - 이메일, 닉네임으로 친구 검색
+        - 검색 결과가 없는 경우 response의 userArray: [] (빈 배열)로 응답
+      operationId: friend/search/get
+      tags:
+        - friend
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: searchString
+          in: query
+          description: 검색할 문자열
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 친구 검색 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userArray:
+                    type: array
+                    properties:
+                      userEmail:
+                        type: string
+                        description: 검색된 유저의 이메일
+                      userName:
+                        type: string
+                        description: 검색된 유저의 이름
+        '500':
+          description: 'code: Internal_Server_Error'
   /friend:
     post:
       summary: friend
