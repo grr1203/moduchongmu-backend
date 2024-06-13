@@ -177,4 +177,12 @@ functions:
           method: post
           authorizer: 
             name: Authorizer
+  friend_get:
+    handler: build/friend/get.handler
+    events:
+      - httpApi:
+          path: /friend
+          method: get
+          authorizer: 
+            name: Authorizer
   

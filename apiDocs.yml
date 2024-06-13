@@ -352,6 +352,7 @@ paths:
                         description: 검색된 유저의 이름
         '500':
           description: 'code: Internal_Server_Error'
+
   /friend:
     post:
       summary: friend
@@ -382,6 +383,42 @@ paths:
                 properties:
                   newFriendName:
                     type: string
+        '500':
+          description: 'code: Internal_Server_Error'
+
+    get:
+      summary: friend
+      description: |
+        - 내 친구 목록 / 친구 후보(나를 추가했는데 내가 친구로 추가하지 않은 유저) 목록 조회
+        - option 파라미터 없을시 둘 다 조회
+        - option - friend : 내 친구 목록 조회
+        - option - beforeFriend : 친구 후보 목록 조회
+      operationId: friend/get
+      tags:
+        - friend
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: searchString
+          in: query
+          description: 검색할 문자열
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 친구 목록 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  friendArray:
+                    type: array
+                    description: string[] - 친구 닉네임 목록
+                  beforeFriendArray:
+                    type: array
+                    description: string[] - 친구 후보 닉네임 목록
         '500':
           description: 'code: Internal_Server_Error'
 
