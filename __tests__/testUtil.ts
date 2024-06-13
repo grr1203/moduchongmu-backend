@@ -19,11 +19,7 @@ export async function privateFunctionTest(testFunction, parameters: { [key: stri
   return response;
 }
 
-export const createPublicLambdaEvent = (parameters: {
-  [key: string]: any;
-}): Omit<APIGatewayProxyEventV2, 'queryStringParameters'> & {
-  queryStringParameters: any;
-} => {
+export const createPublicLambdaEvent = (parameters: { [key: string]: any }): APIGatewayProxyEventV2 => {
   return {
     version: '2.0',
     routeKey: '',
@@ -57,11 +53,7 @@ export const createPublicLambdaEvent = (parameters: {
   };
 };
 
-export const createPublicLambdaEventPost = (body: {
-  [key: string]: any;
-}): Omit<APIGatewayProxyEventV2, 'body'> & {
-  body: any;
-} => {
+export const createPublicLambdaEventPost = (body: { [key: string]: any }): APIGatewayProxyEventV2 => {
   return {
     version: '2.0',
     routeKey: '',
@@ -88,7 +80,7 @@ export const createPublicLambdaEventPost = (body: {
       time: '14/Dec/2023:00:00:00 +0000',
       timeEpoch: 0,
     },
-    body: body,
+    body: JSON.stringify(body),
     isBase64Encoded: false,
   };
 };
@@ -96,9 +88,7 @@ export const createPublicLambdaEventPost = (body: {
 export const createPrivateLambdaEvent = async (
   parameters: { [key: string]: any },
   userAccessToken: string
-): Promise<
-  Omit<APIGatewayProxyEventV2WithLambdaAuthorizer<{ [key: string]: any }>, 'body'> & { body: { [key: string]: any } }
-> => {
+): Promise<APIGatewayProxyEventV2WithLambdaAuthorizer<{ [key: string]: any }>> => {
   const { context: jwtClaims } = await authorizer.handler({
     ...createPublicLambdaEvent(parameters),
     headers: { authorization: `Bearer ${userAccessToken}` },
@@ -110,7 +100,7 @@ export const createPrivateLambdaEvent = async (
     rawQueryString: '',
     headers: { authorization: `Bearer ${userAccessToken}`, origin: 'https://app.plicar.ai' },
     queryStringParameters: parameters,
-    body: parameters,
+    body: JSON.stringify(parameters),
     requestContext: {
       accountId: 'testAccountId',
       apiId: 'testApiId',
