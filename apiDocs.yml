@@ -313,6 +313,40 @@ paths:
           description: 'code: Verification_Failed'
         '500':
           description: 'code: Internal_Server_Error'
+  
+  # Friend
+  /friend:
+    post:
+      summary: friend
+      description: |
+        - 내 친구목록에 새로운 친구 추가하고 추가된 친구에게 푸시 알림 전송
+        - 이미 추가된 친구인 경우 response의 isAlreadyFriend: true로 응답
+      operationId: friend/post
+      tags:
+        - friend
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newFriendName:
+                  type: string
+                  description: 추가할 친구의 이름
+      responses:
+        '200':
+          description: 친구 추가 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  newFriendName:
+                    type: string
+        '500':
+          description: 'code: Internal_Server_Error'
 
 components:
   securitySchemes:

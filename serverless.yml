@@ -119,6 +119,8 @@ functions:
       package:
         include:
           - apiDocs.yml
+  
+  # User
   user_get:
     handler: build/user/get.handler
     events:
@@ -143,6 +145,8 @@ functions:
           method: delete
           authorizer: 
             name: Authorizer
+
+  # Signin
   signin_apple_post:
     handler: build/signin/apple/post.handler
     events:
@@ -155,4 +159,14 @@ functions:
       - httpApi:
           path: /signin/google
           method: post
+  
+  # Friend
+  friend_post:
+    handler: build/friend/post.handler
+    events:
+      - httpApi:
+          path: /friend
+          method: post
+          authorizer: 
+            name: Authorizer
   
