@@ -509,6 +509,8 @@ components:
     Travel:
       type: object
       properties:
+        uid:
+          type: string
         host:
           type: string
         travelName:

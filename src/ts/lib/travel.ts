@@ -2,6 +2,7 @@ import mysqlUtil from './mysqlUtil';
 
 export async function formatTravel(travelObject: {
   idx: number;
+  uid: string;
   hostIdx: number;
   travelName: string;
   destination: string;
@@ -20,6 +21,7 @@ export async function formatTravel(travelObject: {
   ).map((member) => member.memberName);
 
   const travel = {
+    uid: travelObject.uid,
     host,
     travelName: travelObject.travelName,
     destination: travelObject.destination,
