@@ -166,6 +166,8 @@ paths:
                 token:
                   type: string
                   description: Apple에서 발급한 identityToken
+              required:
+                - token
       responses:
         '200':
           description: 회원가입 / 로그인 성공
@@ -208,6 +210,8 @@ paths:
                 token:
                   type: string
                   description: Google에서 발급한 id Token
+              required:
+                - token
       responses:
         '200':
           description: 회원가입 / 로그인 성공
@@ -250,6 +254,8 @@ paths:
                 token:
                   type: string
                   description: Kakao에서 발급한 access token
+              required:
+                - token
       responses:
         '200':
           description: 회원가입 / 로그인 성공
@@ -292,6 +298,8 @@ paths:
                 token:
                   type: string
                   description: Naver에서 발급한 access token
+              required:
+                - token
       responses:
         '200':
           description: 회원가입 / 로그인 성공
@@ -373,6 +381,8 @@ paths:
                 newFriendName:
                   type: string
                   description: 추가할 친구의 이름
+              required:
+                - newFriendName  
       responses:
         '200':
           description: 친구 추가 성공
@@ -399,10 +409,9 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: searchString
+        - name: option
           in: query
-          description: 검색할 문자열
-          required: true
+          description: friend | beforeFriend | null
           schema:
             type: string
       responses:
