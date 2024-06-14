@@ -431,6 +431,60 @@ paths:
         '500':
           description: 'code: Internal_Server_Error'
 
+  # Travel
+  /travel:
+    post:
+      summary: travel
+      description: |
+        - 여행 방 생성
+        - 생성자가 방장으로 여행 방에 참여하게 되며 바꿀 수 없음
+        - 생성 후 다른 유저 초대 가능
+      operationId: travel/post
+      tags:
+        - travel
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                travelName:
+                  type: string
+                  description: 여행 이름
+                destination:
+                  type: string
+                  description: 여행지
+                startDate:
+                  type: string
+                  description: 여행 시작일, YYYY-MM-DD의 Date 형식
+                endDate:
+                  type: string
+                  description: 여행 종료일, YYYY-MM-DD의 Date 형식
+                memo: 
+                  type: string
+                  description: 메모
+              required:
+                - travelName
+                - destination
+                - startDate
+                - endDate
+      responses:
+        '200':
+          description: 여행 일정 추가 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  travel:
+                    $ref: '#/components/schemas/Travel'
+        '409':
+          description: 'code: ALREADY_EXIST_TRAVEL_NAME'
+        '500':
+          description: 'code: Internal_Server_Error'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -452,4 +506,29 @@ components:
           type: string
         marketingAgreed:
           type: number
+    Travel:
+      type: object
+      properties:
+        host:
+          type: string
+        travelName:
+          type: string
+        destination:
+          type: string
+        memberArray:
+          type: array
+          items:
+            type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        memo:
+          type: string
+        settlementDone:
+          type: boolean
+        coverImgUrl:
+          type: string
+        createdDate:
+          type: string
         
