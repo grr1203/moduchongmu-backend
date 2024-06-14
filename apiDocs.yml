@@ -484,6 +484,36 @@ paths:
           description: 'code: ALREADY_EXIST_TRAVEL_NAME'
         '500':
           description: 'code: Internal_Server_Error'
+    
+    get:
+      summary: travel
+      description: 여행 방 조회 - 자신이 멤버로 포함된 여행만 조회 가능
+      operationId: travel/get
+      tags:
+        - travel
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: uid
+          in: query
+          description: 조회할 여행 방의 uid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 여행 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  travel:
+                    $ref: '#/components/schemas/Travel'
+        '403':
+          description: 'code: NOT_MEMBER'
+        '500':
+          description: 'code: Internal_Server_Error'
 
 components:
   securitySchemes:

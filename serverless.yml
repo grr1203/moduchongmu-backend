@@ -195,4 +195,12 @@ functions:
           method: post
           authorizer: 
             name: Authorizer
+  travel_get:
+    handler: build/travel/get.handler
+    events:
+      - httpApi:
+          path: /travel
+          method: get
+          authorizer: 
+            name: Authorizer
   
