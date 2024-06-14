@@ -35,3 +35,18 @@ export async function formatTravel(travelObject: {
   };
   return travel;
 }
+
+export async function checkTravelMember(travelUid: string, userIdx: number) {
+  const travel = await mysqlUtil.getOne('tb_travel', [], { uid: travelUid });
+  if (!travel) return { isMember: false, travel: null };
+
+  const isMember = await mysqlUtil.getOne('tb_travel_member', [], { travelIdx: travel?.idx, userIdx });
+  return { isMember: !!isMember, travel };
+}
+
+export async function checkTravelHost(travelUid: string, userIdx: number) {
+  const travel = await mysqlUtil.getOne('tb_travel', [], { uid: travelUid });
+  if (!travel) return { isHost: false, travel: null };
+
+  return { isHost: travel.hostIdx === userIdx, travel };
+}
