@@ -46,7 +46,6 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   endDate && (updateObject.endDate = endDate);
   memo && (updateObject.memo = memo);
   typeof settlementDone === 'boolean' && (updateObject.settlementDone = settlementDone);
-  await mysqlUtil.update('tb_travel', updateObject, { uid });
 
   // 멤버 삭제만 처리
   if (Array.isArray(newMemberArray)) {
@@ -60,6 +59,9 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
 
   // 커버 이미지 수정 요청시 s3 presigned url 발급
   const postingImageUrl = coverImage ? await getPresignedPostUrl(getTravelCoverImageKey(uid)) : null;
+  postingImageUrl && (updateObject.coverImgUrl = postingImageUrl);
+
+  await mysqlUtil.update('tb_travel', updateObject, { uid });
 
   const travel = await formatTravel({ ...travelData, ...updateObject } as any);
 
