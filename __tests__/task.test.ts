@@ -6,6 +6,7 @@ import { handler as getFriend } from '../src/ts/friend/get';
 import { handler as postTravel } from '../src/ts/travel/post';
 import { handler as getTravel } from '../src/ts/travel/get';
 import { handler as getTravelCurrent } from '../src/ts/travel/current/get';
+import { handler as putTravel } from '../src/ts/travel/put';
 
 describe('ModuChongmu test', () => {
   test('GET test', async () => {
@@ -51,9 +52,22 @@ describe('ModuChongmu test', () => {
     expect(res).toHaveProperty('statusCode', 200);
   });
 
-  test.only('GET travel/current', async () => {
+  test('GET travel/current', async () => {
     const parameters = {}; // { currentDate: '2024-06-15' };
     const res = await privateFunctionTest(getTravelCurrent, parameters);
+    expect(res).toHaveProperty('statusCode', 200);
+  });
+
+  test.only('PUT travel', async () => {
+    const parameters = {
+      uid: 'abcdzz',
+      startDate: '2024-06-13',
+      endDate: '2024-06-18',
+      settlementDone: true,
+      memberArray: ['hyo'],
+      coverImage: true,
+    };
+    const res = await privateFunctionTest(putTravel, parameters);
     expect(res).toHaveProperty('statusCode', 200);
   });
 });
