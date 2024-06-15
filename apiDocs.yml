@@ -651,9 +651,12 @@ paths:
                   travel:
                     $ref: '#/components/schemas/Travel'
                     nullable: true
+                  invitedTravel:
+                    $ref: '#/components/schemas/Travel'
+                    description: 초대받은 아직 참여 전인 여행
                   unsettledTravel:
                     $ref: '#/components/schemas/Travel'
-                    nullable: true
+                    description: 종료된 여행 중 미정산된 여행
         '500':
           description: 'code: Internal_Server_Error'
 
@@ -690,8 +693,11 @@ paths:
                 type: object
                 properties:
                   currentTravel:
-                    type: string
+                    $ref: '#/components/schemas/Travel'
                     description: 현재 진행중인 여행
+                  invitedTravel:
+                    $ref: '#/components/schemas/Travel'
+                    description: 초대받은 아직 참여 전인 여행
                   travelList:
                     type: array
                     items:

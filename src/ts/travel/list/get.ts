@@ -17,8 +17,12 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   const { pageSize, page } = event.queryStringParameters as FromSchema<typeof parameter>;
   const userIdx = event.requestContext.authorizer.lambda.idx;
 
+  // 참여중인 여행 목록 조회
   const travelIdxArray = (
-    await mysqlUtil.getMany('tb_travel_member', ['travelIdx'], { where: { userIdx }, order: [['idx', 'desc']] })
+    await mysqlUtil.getMany('tb_travel_member', ['travelIdx'], {
+      where: { active: true, userIdx },
+      order: [['idx', 'desc']],
+    })
   ).map((e) => e.travelIdx);
   const totalCount = travelIdxArray.length;
 
@@ -28,7 +32,6 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   if (totalCount < startIndex + 1) return { statusCode: 200, body: JSON.stringify({ travelList: [], totalCount }) };
   if (totalCount < endIndex) endIndex = totalCount;
 
-  // 여행 목록 조회
   const travelArray = await mysqlUtil.getMany('tb_travel', [], {
     where: { idx: travelIdxArray.slice(startIndex, endIndex) },
     order: [['idx', 'desc']],
@@ -43,5 +46,17 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   );
   const currentTravel = travelData.length > 0 ? await formatTravel(travelData[0] as any) : null;
 
-  return { statusCode: 200, body: JSON.stringify({ currentTravel, travelList, totalCount }) };
+  // 초대받았지만 참여 전인 여행 조회
+  const invitedTravelIdxArray: object[] = (
+    await mysqlUtil.getMany('tb_travel_member', ['travelIdx'], {
+      active: false,
+      userIdx,
+    })
+  ).map((e) => e.travelIdx);
+  const invitedTravelData: object[] = await mysqlUtil.raw(
+    `SELECT * FROM tb_travel WHERE idx IN (${invitedTravelIdxArray.join(', ')}) order by idx desc;`
+  );
+  const invitedTravel = invitedTravelData.length > 0 ? await formatTravel(invitedTravelData[0] as any) : null;
+
+  return { statusCode: 200, body: JSON.stringify({ currentTravel, invitedTravel, travelList, totalCount }) };
 };

@@ -20,24 +20,38 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   currentDate = currentDate || new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString().split('T')[0];
   console.log('[currentDate]', currentDate);
 
-  // 자신의 여행 목록 중에 현재 여행중인 방 조회
-  const travelIdxList = (await mysqlUtil.getMany('tb_travel_member', ['travelIdx'], { userIdx })).map(
+  // 참여중인 여행 목록 조회
+  const travelIdxArray = (await mysqlUtil.getMany('tb_travel_member', ['travelIdx'], { active: true, userIdx })).map(
     (e) => e.travelIdx
   );
+  
+  // 현재 여행중인 방 조회
   const travelData: object[] = await mysqlUtil.raw(
-    `SELECT * FROM tb_travel WHERE idx IN (${travelIdxList.join(
+    `SELECT * FROM tb_travel WHERE idx IN (${travelIdxArray.join(
       ', '
     )}) AND '${currentDate}' BETWEEN startDate AND endDate order by idx desc;`
   );
   const travel = travelData.length > 0 ? await formatTravel(travelData[0] as any) : null;
 
+  // 초대받았지만 참여 전인 여행 조회
+  const invitedTravelIdxArray: object[] = (
+    await mysqlUtil.getMany('tb_travel_member', ['travelIdx'], {
+      active: false,
+      userIdx,
+    })
+  ).map((e) => e.travelIdx);
+  const invitedTravelData: object[] = await mysqlUtil.raw(
+    `SELECT * FROM tb_travel WHERE idx IN (${invitedTravelIdxArray.join(', ')}) order by idx desc;`
+  );
+  const invitedTravel = invitedTravelData.length > 0 ? await formatTravel(invitedTravelData[0] as any) : null;
+
   // 종료된 여행 중에 정산 전인 여행 조회
   const unsettledTravelData: object[] = await mysqlUtil.raw(
-    `SELECT * FROM tb_travel WHERE idx IN (${travelIdxList.join(
+    `SELECT * FROM tb_travel WHERE idx IN (${travelIdxArray.join(
       ', '
     )}) AND '${currentDate}' > endDate AND settlementDone = 0 order by idx desc;`
   );
   const unsettledTravel = unsettledTravelData.length > 0 ? await formatTravel(unsettledTravelData[0] as any) : null;
 
-  return { statusCode: 200, body: JSON.stringify({ travel, unsettledTravel }) };
+  return { statusCode: 200, body: JSON.stringify({ travel, invitedTravel, unsettledTravel }) };
 };
