@@ -32,7 +32,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     endDate,
     memo,
   });
-  await mysqlUtil.create('tb_travel_member', { travelIdx, memberName: userName, userIdx });
+  await mysqlUtil.create('tb_travel_member', { travelIdx, memberName: userName, userIdx, active: true });
 
   // 조회
   const travelData = await mysqlUtil.getOne('tb_travel', [], { hostIdx: userIdx, travelName });
