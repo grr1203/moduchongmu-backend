@@ -3,6 +3,7 @@ import { USER_JWT_CONTENTS } from '../lib/jwt';
 import mysqlUtil from '../lib/mysqlUtil';
 import { FromSchema } from 'json-schema-to-ts';
 import { getUserProfileImageKey } from '../lib/user';
+import { getPresignedPostUrl } from '../lib/aws/s3Util';
 
 const parameter = {
   type: 'object',
@@ -36,7 +37,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   const user = await mysqlUtil.getOne('tb_user', [...USER_JWT_CONTENTS, 'marketing_agreed'], { idx: userIdx });
   delete user.idx;
 
-  const profileImageUrl = profileImage ? await getUserProfileImageKey(user.email) : null;
+  const profileImageUrl = profileImage ? await getPresignedPostUrl(getUserProfileImageKey(user.email)) : null;
 
   return { statusCode: 200, body: JSON.stringify({ user, profileImageUrl }) };
 };
