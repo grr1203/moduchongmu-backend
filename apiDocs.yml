@@ -657,8 +657,6 @@ paths:
                   unsettledTravel:
                     $ref: '#/components/schemas/Travel'
                     description: 종료된 여행 중 미정산된 여행
-        '500':
-          description: 'code: Internal_Server_Error'
 
   /travel/list:
     get:
@@ -707,9 +705,37 @@ paths:
                           $ref: '#/components/schemas/Travel'
                   totalCount:
                     type: number
-        '500':
-          description: 'code: Internal_Server_Error'
 
+  /travel/enter:
+    post:
+      summary: travel
+      description: 초대받은 여행에 참여(초대 수락)
+      operationId: travel/enter/post
+      tags:
+        - travel
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                travelUid:
+                  type: string
+                  description: 초대받은 여행 방의 uid
+              required:
+                - travelUid
+      responses:
+        '200':
+          description: 여행 방 참여 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  travelUid:
+                    type: string
 
 components:
   securitySchemes:

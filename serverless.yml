@@ -235,4 +235,12 @@ functions:
           method: delete
           authorizer: 
             name: Authorizer
+  travel_enter_post:
+    handler: build/travel/enter/post.handler
+    events:
+      - httpApi:
+          path: /travel/enter
+          method: post
+          authorizer: 
+            name: Authorizer
   
