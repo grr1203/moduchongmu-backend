@@ -20,7 +20,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
 
   const updateObject: { [key: string]: any } = {};
   userName && typeof userName === 'string' && (updateObject.userName = userName);
-  marketingAgreed && typeof marketingAgreed === 'boolean' && (updateObject.marketingAgreed = marketingAgreed);
+  typeof marketingAgreed === 'boolean' && (updateObject.marketingAgreed = marketingAgreed);
   statusMessage && typeof statusMessage === 'string' && (updateObject.statusMessage = statusMessage);
 
   // userName unique check
