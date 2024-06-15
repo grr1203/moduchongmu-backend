@@ -22,10 +22,6 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   const userIdx = event.requestContext.authorizer.lambda.idx;
   const userName = event.requestContext.authorizer.lambda.userName;
 
-  // hostIdx - travelName (unique)으로 중복 체크
-  const isExist = await mysqlUtil.getOne('tb_travel', [], { hostIdx: userIdx, travelName });
-  if (isExist) return { statusCode: 409, body: JSON.stringify({ code: 'ALREADY_EXIST_TRAVEL_NAME' }) };
-
   // 여행 방 생성 및 멤버로 자신 추가
   const travelIdx = await mysqlUtil.create('tb_travel', {
     uid: nanoid(10),
