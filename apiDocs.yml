@@ -94,6 +94,7 @@ paths:
       description: |
         - userName이 없는 유저에게 userName을 부여하고 회원가입 처리를 완료한다.
         - User 정보를 수정한다.
+        - profileImage: true로 요청 시 response의 profileImageUrl에 s3 presigned url 전달
       operationId: user/put
       tags:
         - user
@@ -114,6 +115,9 @@ paths:
                 statusMessage:
                   type: string
                   description: 상태 메시지 수정 요청시
+                profileIamge:
+                  type: boolean
+                  description: 프로필 이미지 수정 요청시
       responses:
         '200':
           description: 수정된 유저 데이터 전달
@@ -124,6 +128,8 @@ paths:
                 properties:
                   user:
                     $ref: '#/components/schemas/User'
+                  profileImageUrl:
+                    type: string
                       
     delete:
       summary: user
