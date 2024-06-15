@@ -615,6 +615,39 @@ paths:
                     type: string
         '500':
           description: 'code: Internal_Server_Error'
+  
+    delete:
+      summary: travel
+      description: |
+        - 여행 방 삭제
+        - 방장만 삭제 가능
+      operationId: travel/delete
+      tags:
+        - travel
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: uid
+          in: query
+          description: 삭제할 여행 방의 uid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 삭제 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uid:
+                    type: string
+                    description: 삭제된 여행 방의 uid
+        '403':
+          description: 'code: NOT_HOST'
+        '500':
+          description: 'code: Internal_Server_Error'
 
 components:
   securitySchemes:

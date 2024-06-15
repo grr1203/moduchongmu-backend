@@ -219,4 +219,12 @@ functions:
           method: put
           authorizer: 
             name: Authorizer
+  travel_delete:
+    handler: build/travel/delete.handler
+    events:
+      - httpApi:
+          path: /travel
+          method: delete
+          authorizer: 
+            name: Authorizer
   
