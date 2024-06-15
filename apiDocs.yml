@@ -551,6 +551,71 @@ paths:
         '500':
           description: 'code: Internal_Server_Error'
 
+    put:
+      summary: travel
+      description: |
+        - 여행 정보 수정
+        - 정산 완료 시 settlementDone: true로 요청
+        - 멤버 수정은 삭제에 대해서만 처리, 삭제할 인원을 제외한 나머지 멤버를 memberArray에 넣어 요청
+        - 여행에 멤버 추가는 초대 API로 처리
+        - 커버 이미지 수정 요청 시 coverImage: true로 요청, response의 postingImageUrl에 s3 presigned url 전달
+      operationId: travel/put
+      tags:
+        - travel
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uid:
+                  type: string
+                  description: 수정할 여행 방의 uid
+                travelName:
+                  type: string
+                  description: 여행 이름 수정 요청시
+                destination:
+                  type: string
+                  description: 여행지 수정 요청시
+                startDate:
+                  type: string
+                  description: 여행 시작일 수정 요청시, YYYY-MM-DD의 Date 형식
+                endDate:
+                  type: string
+                  description: 여행 종료일 수정 요청시, YYYY-MM-DD의 Date 형식
+                memo: 
+                  type: string
+                  description: 메모 수정 요청시
+                settlementDone:
+                  type: boolean
+                  description: 정산 완료 여부 수정 요청시
+                memberArray:
+                  type: array
+                  items:
+                    type: string
+                  description: 삭제할 멤버 uid 목록
+                coverImage:
+                  type: boolean
+                  description: 여행 방 커버 이미지 수정 요청시
+              required:
+                - uid
+      responses:
+        '200':
+          description: 여행 정보 수정 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  travel:
+                    $ref: '#/components/schemas/Travel'
+                  postingImageUrl:
+                    type: string
+        '500':
+          description: 'code: Internal_Server_Error'
+
 components:
   securitySchemes:
     bearerAuth:

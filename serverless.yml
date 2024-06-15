@@ -211,4 +211,12 @@ functions:
           method: get
           authorizer: 
             name: Authorizer
+  travel_put:
+    handler: build/travel/put.handler
+    events:
+      - httpApi:
+          path: /travel
+          method: put
+          authorizer: 
+            name: Authorizer
   

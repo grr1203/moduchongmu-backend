@@ -50,3 +50,5 @@ export async function checkTravelHost(travelUid: string, userIdx: number) {
 
   return { isHost: travel.hostIdx === userIdx, travel };
 }
+
+export const getTravelCoverImageKey = (travelUid: string) => `travel/${travelUid}/cover.png`;
