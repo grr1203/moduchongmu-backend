@@ -9,5 +9,5 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   await mysqlUtil.deleteMany('tb_user', { idx: userIdx });
   console.log(`delete user ${userEmail} success`);
 
-  return { statusCode: 200, userEmail };
+  return { statusCode: 200, body: JSON.stringify({ userEmail }) };
 };
