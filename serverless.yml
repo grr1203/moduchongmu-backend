@@ -203,4 +203,12 @@ functions:
           method: get
           authorizer: 
             name: Authorizer
+  travel_current_get:
+    handler: build/travel/current/get.handler
+    events:
+      - httpApi:
+          path: /travel/current
+          method: get
+          authorizer: 
+            name: Authorizer
   

@@ -515,6 +515,42 @@ paths:
         '500':
           description: 'code: Internal_Server_Error'
 
+  /travel/current:
+    get:
+      summary: travel
+      description: |
+        - 현재 진행중인 여행 및 종료된 여행중 미정산된 여행 조회
+        - currentDate로 현지 시간 보낼 시 이 시간 기준, 보내지 않을 시 서버 시간으로 계산한 한국 시간 기준
+        - 진행중인 여행이 없다면 response의 travel: null로 응답
+        - 종료된 여행이 모두 정산 완료 되었다면 response의 unsettledTravel: null로 응답
+      operationId: travel/current/get
+      tags:
+        - travel
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: currentDate
+          in: query
+          description: 현재 날짜
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 여행 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  travel:
+                    $ref: '#/components/schemas/Travel'
+                    nullable: true
+                  unsettledTravel:
+                    $ref: '#/components/schemas/Travel'
+                    nullable: true
+        '500':
+          description: 'code: Internal_Server_Error'
+
 components:
   securitySchemes:
     bearerAuth:
