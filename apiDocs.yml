@@ -71,7 +71,9 @@ paths:
   /user:
     get:
       summary: user
-      description: User 정보를 조회한다. (token 정보로 DB 조회)
+      description: |
+        - User 정보를 조회한다. (token 정보로 DB 조회)
+        - 유저 프로필 이미지는 s3 url + key: user/${userEmail}/profile.png 를 이용하여 조회
       operationId: user/get
       tags:
         - user
