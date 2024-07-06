@@ -28,7 +28,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
 
   // pagenation
   const startIndex = (page - 1) * pageSize;
-  let endIndex = startIndex + pageSize - 1;
+  let endIndex = startIndex + pageSize;
   if (totalCount < startIndex + 1) return { statusCode: 200, body: JSON.stringify({ travelList: [], totalCount }) };
   if (totalCount < endIndex) endIndex = totalCount;
 
