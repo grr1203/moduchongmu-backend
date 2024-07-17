@@ -27,7 +27,7 @@ provider:
           - $request.header.Authorization
         enableSimpleResponses: true
   endpointType: REGIONAL
-  stage: ${env:STAGE, "dev"}
+  stage: dev
   tags:
     Service: ${self:service}
     Application: ${self:service}

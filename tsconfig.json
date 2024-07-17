@@ -7,7 +7,7 @@
     "removeComments": true, // js 파일에서 주석 제거
     "sourceMap": true,
     "skipLibCheck": true, 
-    "module": "commonjs", // 컴파일된 js의 모듈 시스템
+    "module": "ESNext", // 컴파일된 js의 모듈 시스템
     "esModuleInterop": true, 
     "baseUrl": ".",
     "paths": {},

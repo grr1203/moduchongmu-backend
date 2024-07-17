@@ -26,3 +26,6 @@ __tests__/env.ts
 
 # mac
 .DS_Store
+
+# build
+build
