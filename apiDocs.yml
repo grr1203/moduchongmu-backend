@@ -737,6 +737,42 @@ paths:
                   travelUid:
                     type: string
 
+  /travel/invite:
+    post:
+      summary: travel
+      description: |
+        - 여행 방에 멤버 초대
+      operationId: travel/invite/post
+      tags:
+        - travel
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                travelUid:
+                  type: string
+                  description: 초대할 여행 방의 uid
+                memberName:
+                  type: string
+                  description: 초대할 멤버의 이름
+              required:
+                - travelUid
+                - memberName
+      responses:
+        '200':
+          description: 초대 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: true
+        '500':
+          description: 'code: Internal_Server_Error'
+
 components:
   securitySchemes:
     bearerAuth:
