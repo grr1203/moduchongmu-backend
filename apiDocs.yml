@@ -772,6 +772,36 @@ paths:
                 nullable: true
         '500':
           description: 'code: Internal_Server_Error'
+    put:
+      summary: travel
+      description: |
+        - 여행 방 초대 수락
+      operationId: travel/invite/put
+      tags:
+        - travel
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                travelUid:
+                  type: string
+                  description: 초대를 수락할 여행 방의 uid
+              required:
+                - travelUid
+      responses:
+        '200':
+          description: 초대 수락 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: true
+        '500':
+          description: 'code: Internal_Server_Error'
 
 components:
   securitySchemes:
