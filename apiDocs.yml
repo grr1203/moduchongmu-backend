@@ -11,8 +11,8 @@ info:
     name: MIT
     url: https://spdx.org/licenses/MIT
 servers:
-  - url: 'https://[api-gateway-id].execute-api.ap-northeast-2.amazonaws.com/stag'
-    description: Stag server
+  - url: 'https://x05rsb7lj6.execute-api.ap-northeast-2.amazonaws.com/dev'
+    description: Dev server
 paths:
   # test
   /test:
@@ -132,6 +132,16 @@ paths:
                     $ref: '#/components/schemas/User'
                   profileImageUrl:
                     type: string
+        '400':
+          description: 닉네임 중복인 경우
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: UserName_Exist
                       
     delete:
       summary: user
@@ -156,7 +166,7 @@ paths:
   # Signin
   /signin/apple:
     post:
-      summary: signin
+      summary: signin/apple
       description: |
         - Apple 회원가입 / 로그인
         - 회원가입 시 response의 processType: signup
@@ -200,7 +210,7 @@ paths:
   
   /signin/google:
     post:
-      summary: signin
+      summary: signin/google
       description: |
         - Google 회원가입 / 로그인
         - 회원가입 시 response의 processType: signup
@@ -244,7 +254,7 @@ paths:
 
   /signin/kakao:
     post:
-      summary: signin
+      summary: signin/kakao
       description: |
         - Kakao 회원가입 / 로그인
         - 회원가입 시 response의 processType: signup
@@ -288,7 +298,7 @@ paths:
   
   /signin/naver:
     post:
-      summary: signin
+      summary: signin/naver
       description: |
         - Naver 회원가입 / 로그인
         - 회원가입 시 response의 processType: signup
@@ -333,7 +343,7 @@ paths:
   # Friend
   /friend/search:
     get:
-      summary: friend
+      summary: friend/search
       description: |
         - 이메일, 닉네임으로 친구 검색
         - 검색 결과가 없는 경우 response의 userArray: [] (빈 배열)로 응답
@@ -461,7 +471,7 @@ paths:
                 travelName:
                   type: string
                   description: 여행 이름
-                destination:
+                country:
                   type: string
                   description: 여행지
                 startDate:
@@ -475,7 +485,7 @@ paths:
                   description: 메모
               required:
                 - travelName
-                - destination
+                - country
                 - startDate
                 - endDate
       responses:
@@ -548,7 +558,7 @@ paths:
                 travelName:
                   type: string
                   description: 여행 이름 수정 요청시
-                destination:
+                country:
                   type: string
                   description: 여행지 수정 요청시
                 startDate:
@@ -623,7 +633,7 @@ paths:
 
   /travel/current:
     get:
-      summary: travel
+      summary: travel/current
       description: |
         - 현재 진행중인 여행 및 종료된 여행중 미정산된 여행 조회
         - currentDate로 현지 시간 보낼 시 이 시간 기준, 보내지 않을 시 서버 시간으로 계산한 한국 시간 기준
@@ -660,7 +670,7 @@ paths:
 
   /travel/list:
     get:
-      summary: travel
+      summary: travel/list
       description: |
         - 내 여행 목록 조회
         - 최신 여행부터 내림차순
@@ -708,7 +718,7 @@ paths:
 
   /travel/enter:
     post:
-      summary: travel
+      summary: travel/enter
       description: 초대받은 여행에 참여(초대 수락)
       operationId: travel/enter/post
       tags:
@@ -739,7 +749,7 @@ paths:
 
   /travel/invite:
     post:
-      summary: travel
+      summary: travel/invite
       description: |
         - 여행 방에 멤버 초대
       operationId: travel/invite/post
@@ -772,8 +782,9 @@ paths:
                 nullable: true
         '500':
           description: 'code: Internal_Server_Error'
+
     put:
-      summary: travel
+      summary: travel/invite
       description: |
         - 여행 방 초대 수락
       operationId: travel/invite/put
@@ -833,7 +844,9 @@ components:
           type: string
         travelName:
           type: string
-        destination:
+        country:
+          type: string
+        city:
           type: string
         memberArray:
           type: array
