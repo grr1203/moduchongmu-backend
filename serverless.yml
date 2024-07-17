@@ -243,4 +243,19 @@ functions:
           method: post
           authorizer: 
             name: Authorizer
-  
+  travel_invite_post:
+    handler: build/travel/invite/post.handler
+    events:
+      - httpApi:
+          path: /travel/invite
+          method: post
+          authorizer: 
+            name: Authorizer
+  travel_invite_put:
+    handler: build/travel/invite/put.handler
+    events:
+      - httpApi:
+          path: /travel/invite
+          method: put
+          authorizer: 
+            name: Authorizer
