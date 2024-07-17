@@ -5,7 +5,8 @@ export async function formatTravel(travelObject: {
   uid: string;
   hostIdx: number;
   travelName: string;
-  destination: string;
+  country: string;
+  city: string;
   startDate: string;
   endDate: string;
   settlementDone: number;
@@ -24,7 +25,8 @@ export async function formatTravel(travelObject: {
     uid: travelObject.uid,
     host,
     travelName: travelObject.travelName,
-    destination: travelObject.destination,
+    country: travelObject.country,
+    city: travelObject.city,
     memberArray,
     startDate: travelObject.startDate,
     endDate: travelObject.endDate,

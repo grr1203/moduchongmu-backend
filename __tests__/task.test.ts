@@ -38,7 +38,8 @@ describe('ModuChongmu test', () => {
   test('POST travel', async () => {
     const parameters = {
       travelName: 'templestay',
-      destination: 'bukhansan',
+      country: 'korea',
+      city: 'seoul',
       startDate: '2024-06-14',
       endDate: '2024-06-22',
       memo: '메모 크크',

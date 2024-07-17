@@ -9,7 +9,8 @@ const parameter = {
   properties: {
     uid: { type: 'string' },
     travelName: { type: 'string' },
-    destination: { type: 'string' },
+    country: { type: 'string' },
+    city: { type: 'string' },
     startDate: { type: 'string' }, // Date - yyyy-mm-dd
     endDate: { type: 'string' }, // Date - yyyy-mm-dd
     memo: { type: 'string' },
@@ -25,7 +26,8 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   const {
     uid,
     travelName,
-    destination,
+    country,
+    city,
     startDate,
     endDate,
     memo,
@@ -41,7 +43,8 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
 
   const updateObject: { [key: string]: any } = {};
   travelName && (updateObject.travelName = travelName);
-  destination && (updateObject.destination = destination);
+  country && (updateObject.country = country);
+  city && (updateObject.city = city);
   startDate && (updateObject.startDate = startDate);
   endDate && (updateObject.endDate = endDate);
   memo && (updateObject.memo = memo);

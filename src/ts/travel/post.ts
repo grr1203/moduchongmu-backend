@@ -8,17 +8,20 @@ const parameter = {
   type: 'object',
   properties: {
     travelName: { type: 'string' },
-    destination: { type: 'string' },
+    country: { type: 'string' },
+    city: { type: 'string' },
     startDate: { type: 'string' }, // Date - yyyy-mm-dd
     endDate: { type: 'string' }, // Date - yyyy-mm-dd
     memo: { type: 'string' },
   },
-  required: ['travelName', 'destination', 'startDate', 'endDate'],
+  required: ['travelName', 'country', 'city', 'startDate', 'endDate'],
 } as const;
 
 export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<{ [key: string]: any }>) => {
   console.log('[event]', event);
-  const { travelName, destination, startDate, endDate, memo } = JSON.parse(event.body) as FromSchema<typeof parameter>;
+  const { travelName, country, city, startDate, endDate, memo } = JSON.parse(event.body) as FromSchema<
+    typeof parameter
+  >;
   const userIdx = event.requestContext.authorizer.lambda.idx;
   const userName = event.requestContext.authorizer.lambda.userName;
 
@@ -27,7 +30,8 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     uid: nanoid(10),
     hostIdx: userIdx,
     travelName,
-    destination,
+    country,
+    city,
     startDate,
     endDate,
     memo,
