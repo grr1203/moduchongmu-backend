@@ -259,3 +259,11 @@ functions:
           method: put
           authorizer: 
             name: Authorizer
+
+  # Admin
+  admin_city_post:
+    handler: build/admin/city/post.handler
+    events:
+      - httpApi:
+          path: /admin/city
+          method: post
