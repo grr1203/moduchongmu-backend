@@ -265,6 +265,8 @@ functions:
       - httpApi:
           path: /travel/city
           method: get
+          authorizer: 
+            name: Authorizer
 
   # Admin
   admin_city_post:
@@ -273,3 +275,13 @@ functions:
       - httpApi:
           path: /admin/city
           method: post
+
+  # Transaction
+  transaction_currency_get:
+    handler: build/transaction/currency/get.handler
+    events:
+      - httpApi:
+          path: /transaction/currency
+          method: get
+          authorizer: 
+            name: Authorizer

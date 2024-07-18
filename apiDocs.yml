@@ -855,6 +855,48 @@ paths:
         '500':
           description: 'code: Internal_Server_Error'
 
+  /transaction/currency:
+    get:
+      summary: transaction/currency
+      description: |
+        - 세계 통화 정보 조회
+        - country: null | undefined | false 로 요청시 전체 데이터 조회(중복되지 않는 currency)
+      operationId: transaction/currency/get
+      tags:
+        - transaction
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: country
+          in: query
+          description: 조회할 나라명
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 환율 정보 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currencyList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        country:
+                          type: array
+                          items:
+                            type: string
+                        currency:
+                          type: string
+                        symbol:
+                          type: number
+                          description: 통화 로고
+        '500':
+          description: 'code: Internal_Server_Error'
+
 components:
   securitySchemes:
     bearerAuth:

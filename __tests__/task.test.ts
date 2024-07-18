@@ -8,6 +8,7 @@ import { handler as getTravel } from '../src/ts/travel/get';
 import { handler as getTravelCurrent } from '../src/ts/travel/current/get';
 import { handler as putTravel } from '../src/ts/travel/put';
 import { handler as getTravelList } from '../src/ts/travel/list/get';
+import { handler as getTransactionCurrency } from '../src/ts/transaction/currency/get';
 
 describe('ModuChongmu test', () => {
   test('GET test', async () => {
@@ -73,9 +74,15 @@ describe('ModuChongmu test', () => {
     expect(res).toHaveProperty('statusCode', 200);
   });
 
-  test.only('GET travel/list', async () => {
+  test('GET travel/list', async () => {
     const parameters = { pageSize: 10, page: 1 };
     const res = await privateFunctionTest(getTravelList, parameters);
+    expect(res).toHaveProperty('statusCode', 200);
+  });
+
+  test.only('GET transaction/currency', async () => {
+    const parameters = { country: null };
+    const res = await privateFunctionTest(getTransactionCurrency, parameters);
     expect(res).toHaveProperty('statusCode', 200);
   });
 });
