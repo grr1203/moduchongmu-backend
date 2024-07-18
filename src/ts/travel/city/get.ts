@@ -13,14 +13,17 @@ const parameter = {
 
 export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<{ [key: string]: any }>) => {
   console.log('[event]', event);
-  const { searchString } = event.queryStringParameters as FromSchema<typeof parameter>;
+  const { searchString } = (event.queryStringParameters || {}) as FromSchema<typeof parameter>;
 
-  const searchResult = await mysqlUtil.search('tb_travel_city', ['city', 'country'], searchString);
+  const searchResult = searchString
+    ? await mysqlUtil.search('tb_travel_city', ['city', 'country'], searchString)
+    : await mysqlUtil.getMany('tb_travel_city', ['city', 'country'], {});
+
   const formattedResult =
     searchResult.length === 0
       ? null
       : searchResult.map((result: any) => {
-          return { city: result.city, country: result.country, cover: `${BucketUrl}/city/${result.city}/cover` };
+          return { city: result.city, country: result.country, cover: `https://${BucketUrl}/city/${result.city}/cover` };
         });
 
   return { statusCode: 200, body: JSON.stringify({ result: formattedResult }) };

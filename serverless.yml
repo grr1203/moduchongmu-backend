@@ -265,8 +265,6 @@ functions:
       - httpApi:
           path: /travel/city
           method: get
-          authorizer: 
-            name: Authorizer
 
   # Admin
   admin_city_post:
