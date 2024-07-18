@@ -3,6 +3,7 @@ import { S3Client, GetObjectCommand, HeadObjectCommand, PutObjectCommand } from 
 
 const client = new S3Client({ region: 'ap-northeast-2' });
 const Bucket = `${process.env.APP}-${process.env.STAGE}-bucket`;
+export const BucketUrl = `moduchongmu-dev-bucket.s3.ap-northeast-2.amazonaws.com`;
 
 export const getPresignedPostUrl = async (Key: string) => {
   const command = new PutObjectCommand({ Bucket, Key });

@@ -259,6 +259,14 @@ functions:
           method: put
           authorizer: 
             name: Authorizer
+  travel_city_get:
+    handler: build/travel/city/get.handler
+    events:
+      - httpApi:
+          path: /travel/city
+          method: get
+          authorizer: 
+            name: Authorizer
 
   # Admin
   admin_city_post:
