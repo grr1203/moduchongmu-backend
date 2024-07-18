@@ -9,6 +9,7 @@ export async function formatTravel(travelObject: {
   city: string;
   startDate: string;
   endDate: string;
+  currency: string;
   settlementDone: number;
   coverImgUrl?: string;
   createdDate: string;
@@ -30,6 +31,7 @@ export async function formatTravel(travelObject: {
     memberArray,
     startDate: travelObject.startDate,
     endDate: travelObject.endDate,
+    currency: travelObject.currency,
     settlementDone: travelObject.settlementDone === 1,
     coverImgUrl: travelObject.coverImgUrl,
     createdDate: travelObject.createdDate,

@@ -14,6 +14,7 @@ const parameter = {
     startDate: { type: 'string' }, // Date - yyyy-mm-dd
     endDate: { type: 'string' }, // Date - yyyy-mm-dd
     memo: { type: 'string' },
+    currency: { type: 'string' },
     settlementDone: { type: 'boolean' },
     memberArray: { type: 'array', items: { type: 'string' } }, // 멤버 삭제시에만 사용
     coverImage: { type: 'boolean' }, // true면 업로드 url 전달
@@ -30,6 +31,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     city,
     startDate,
     endDate,
+    currency,
     memo,
     settlementDone,
     memberArray: newMemberArray,
@@ -47,6 +49,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   city && (updateObject.city = city);
   startDate && (updateObject.startDate = startDate);
   endDate && (updateObject.endDate = endDate);
+  currency && (updateObject.currency = currency);
   memo && (updateObject.memo = memo);
   typeof settlementDone === 'boolean' && (updateObject.settlementDone = settlementDone);
 
