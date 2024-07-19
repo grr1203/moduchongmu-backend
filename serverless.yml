@@ -293,3 +293,12 @@ functions:
           method: post
           authorizer: 
             name: Authorizer
+  transaction_list_get:
+    handler: build/transaction/list/get.handler
+    events:
+      - httpApi:
+          path: /transaction/list
+          method: get
+          authorizer: 
+            name: Authorizer
+            

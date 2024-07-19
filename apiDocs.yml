@@ -980,6 +980,49 @@ paths:
         '500':
           description: 'code: Internal_Server_Error'
 
+  /transaction/list:
+    get:
+      summary: transaction/list
+      description: |
+        - 여행의 거래 내역 조회
+        - 페이지 초과시 transactionList: [] 로 응답
+      operationId: transaction/list/get
+      tags:
+        - transaction
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: travelUid
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          required: true
+          schema:
+            type: number
+        - name: page
+          in: query
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: 거래 내역 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionList:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+                  totalCount:
+                    type: number
+        '500':
+          description: 'code: Internal_Server_Error'
 
 components:
   securitySchemes:

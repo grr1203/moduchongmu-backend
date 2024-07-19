@@ -10,6 +10,7 @@ import { handler as putTravel } from '../src/ts/travel/put';
 import { handler as getTravelList } from '../src/ts/travel/list/get';
 import { handler as getTransactionCurrency } from '../src/ts/transaction/currency/get';
 import { handler as postTransaction } from '../src/ts/transaction/post';
+import { handler as getTransactionList } from '../src/ts/transaction/list/get';
 
 describe('ModuChongmu test', () => {
   test('GET test', async () => {
@@ -90,7 +91,7 @@ describe('ModuChongmu test', () => {
     expect(res).toHaveProperty('statusCode', 200);
   });
 
-  test.only('POST transaction', async () => {
+  test('POST transaction', async () => {
     const parameters = {
       travelUid: 'abcdzz',
       executorList: [1],
@@ -105,6 +106,12 @@ describe('ModuChongmu test', () => {
       createdDate: '2024-07-19T16:00:00+09:00',
     };
     const res = await privateFunctionTest(postTransaction, parameters);
+    expect(res).toHaveProperty('statusCode', 200);
+  });
+
+  test.only('GET transaction/list', async () => {
+    const parameters = { travelUid: 'abcdzz', pageSize: 10, page: 1 };
+    const res = await privateFunctionTest(getTransactionList, parameters);
     expect(res).toHaveProperty('statusCode', 200);
   });
 });
