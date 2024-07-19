@@ -20,7 +20,13 @@ export async function formatTravel(travelObject: {
   // 멤버 조회
   const memberArray = (
     await mysqlUtil.getMany('tb_travel_member', ['memberName'], { travelIdx: travelObject.idx })
-  ).map((member) => member.memberName);
+  ).map((member) => {
+    return {
+      memberIdx: member.idx,
+      memberName: member.memberName,
+      active: member.active === 1,
+    };
+  });
 
   const travel = {
     uid: travelObject.uid,

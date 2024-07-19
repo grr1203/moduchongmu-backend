@@ -577,7 +577,7 @@ paths:
                   type: array
                   items:
                     type: string
-                  description: 삭제할 멤버 uid 목록
+                  description: 수정시 기존유저 + 새유저 - 삭제유저 포함된 전체 멤버 이름이 있는 string Array
                 coverImage:
                   type: boolean
                   description: 여행 방 커버 이미지 수정 요청시
@@ -855,6 +855,7 @@ paths:
         '500':
           description: 'code: Internal_Server_Error'
 
+  # Transaction
   /transaction/currency:
     get:
       summary: transaction/currency
@@ -874,7 +875,7 @@ paths:
             type: string
       responses:
         '200':
-          description: 환율 정보 조회 성공
+          description: 통화 정보 조회 성공
           content:
             application/json:
               schema:
@@ -896,6 +897,8 @@ paths:
                           description: 통화 로고
         '500':
           description: 'code: Internal_Server_Error'
+
+  
 
 components:
   securitySchemes:
