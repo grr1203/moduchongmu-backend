@@ -19,7 +19,7 @@ export function formatTransaction(
 ) {
   const transaction = {
     uid: tansactionObject.uid,
-    creator: travelMemberList.find((member) => member.idx === tansactionObject.userIdx)?.memberName,
+    recordBy: travelMemberList.find((member) => member.idx === tansactionObject.userIdx)?.memberName,
     executorList: tansactionObject.executorList.split(',').map((idx) => {
       return travelMemberList.find((member) => member.idx === Number(idx))?.memberName;
     }),

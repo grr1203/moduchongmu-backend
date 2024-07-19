@@ -595,6 +595,8 @@ paths:
                     $ref: '#/components/schemas/Travel'
                   postingImageUrl:
                     type: string
+        '403':
+          description: 'code: NOT_MEMBER'
         '500':
           description: 'code: Internal_Server_Error'
   
@@ -979,6 +981,78 @@ paths:
                     $ref: '#/components/schemas/Transaction'
         '500':
           description: 'code: Internal_Server_Error'
+
+    put:
+      summary: transaction
+      description: |
+        - 거래 내역 수정
+        - 파라미터로 수정할 데이터를 전달한다. (수정하지 않을 데이터는 전달하지 않음)
+      operationId: transaction/put
+      tags:
+        - transaction
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uid:
+                  type: string
+                  description: 수정할 거래의 uid
+                executorList:
+                  type: array
+                  items:
+                    type: number
+                    description: 거래를 수행한 유저들의 travel member idx list 수정 요청시
+                targetList:
+                  type: array
+                  items:
+                    type: number
+                    description: 거래에 연관있는 유저들의 travel member idx list 수정 요청시
+                category:
+                  type: string
+                  description: 거래 내역의 카테고리 수정 요청시
+                content:
+                  type: string
+                  description: 거래 내역의 내용 수정 요청시
+                type:
+                  type: string
+                  description: expense | income | transfer
+                amount:
+                  type: number
+                  description: currency 기준 거래 금액 절대값 수정 요청시
+                currency:
+                  type: string
+                  description: 거래 통화 - code(symbol) 형태로 입력바람
+                paymentMethod:
+                  type: string
+                  description: card | teamCash | personalCash 
+                expenseSplit:
+                  type: object
+                  description: |
+                    - N빵이 아닌 경우 사용
+                    - 1. { travelMemberIdx : amount } 형태로 입력 가능 (ex 1000)
+                    - 2. { travelMemberIdx : ratio } 형태로 입력 가능 (ex 0.2)
+                    - 입력하지 않은 나머지 멤버들끼리 남은 금액을 N빵한다.
+              required:
+                - uid
+      responses:
+        '200':
+          description: 거래 내역 수정 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transaction:
+                    $ref: '#/components/schemas/Transaction'
+        '403':
+          description: 'code: NOT_MEMBER'
+        '500':
+          description: 'code: Internal_Server_Error'
+
     delete:
       summary: transaction
       description: |
@@ -1006,6 +1080,8 @@ paths:
                   uid:
                     type: string
                     description: 삭제된 거래의 uid
+        '403':
+          description: 'code: NOT_MEMBER'
         '500':
           description: 'code: Internal_Server_Error'
 
@@ -1110,9 +1186,9 @@ components:
       properties:
         uid:
           type: string
-        creator:
+        recordBy:
           type: string
-          description: 트랜잭션 생성한 유저의 travel member name
+          description: 트랜잭션 생성했거나 마지막으로 수정한 유저의 travel member name
         executorList:
           type: array
           items:
