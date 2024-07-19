@@ -30,8 +30,21 @@ export function formatTransaction(
     amount: tansactionObject.amount,
     currency: tansactionObject.currency,
     paymentMethod: tansactionObject.paymentMethod,
-    expenseSplit: tansactionObject.expenseSplit,
+    expenseSplit: transformExpenseSplitObject(tansactionObject.expenseSplit, travelMemberList),
     createDate: tansactionObject.createdDate,
   };
   return transaction;
+}
+
+function transformExpenseSplitObject(expenseSplit, travelMemberList) {
+  const newExpenseSplit = {};
+  for (const key in expenseSplit) {
+    if (expenseSplit.hasOwnProperty(key)) {
+      const member = travelMemberList.find((item) => item.idx === parseInt(key));
+      if (member) {
+        newExpenseSplit[member.memberName] = expenseSplit[key];
+      }
+    }
+  }
+  return Object.keys(newExpenseSplit).length !== 0 ? newExpenseSplit : null;
 }
