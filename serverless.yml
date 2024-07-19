@@ -285,3 +285,11 @@ functions:
           method: get
           authorizer: 
             name: Authorizer
+  transaction_post:
+    handler: build/transaction/post.handler
+    events:
+      - httpApi:
+          path: /transaction
+          method: post
+          authorizer: 
+            name: Authorizer

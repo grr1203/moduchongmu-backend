@@ -898,7 +898,88 @@ paths:
         '500':
           description: 'code: Internal_Server_Error'
 
-  
+  /transaction:
+    post:
+      summary: transaction
+      description: |
+        - 여행 중 발생하는 거래 내역을 기록(소비, 수익, 송금)
+        - 거래 내역 추가 시 해당 여행 방의 멤버들에게 푸시 알림 전송(todo)
+      operationId: transaction/post
+      tags:
+        - transaction
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                travelUid:
+                  type: string
+                  description: 거래가 발생한 여행 방의 uid
+                executorList:
+                  type: array
+                  items:
+                    type: number
+                    description: 거래를 수행한 유저들의 travel member idx list
+                targetList:
+                  type: array
+                  items:
+                    type: number
+                    description: 거래에 연관있는 유저들의 travel member idx list
+                category:
+                  type: string
+                  description: 거래 내역의 카테고리
+                content:
+                  type: string
+                  description: 거래 내역의 내용
+                type:
+                  type: string
+                  description: expense | income | transfer
+                amount:
+                  type: number
+                  description: currency 기준 거래 금액 절대값
+                currency:
+                  type: string
+                  description: 거래 통화 - code(symbol) 형태로 입력바람
+                paymentMethod:
+                  type: string
+                  description: card | teamCash | personalCash
+                expenseSplit:
+                  type: object
+                  description: |
+                    - N빵이 아닌 경우 사용
+                    - 1. { travelMemberIdx : amount } 형태로 입력 가능 (ex 1000)
+                    - 2. { travelMemberIdx : ratio } 형태로 입력 가능 (ex 0.2)
+                    - 입력하지 않은 나머지 멤버들끼리 남은 금액을 N빵한다.
+                createdDate:
+                  type: string
+                  description: YYYY-MM-DDTHH:mm:ss+09:00
+              required:
+                - travelUid
+                - executorList
+                - targetList
+                - category
+                - content
+                - type
+                - amount
+                - currency
+                - paymentMethod
+                - createdDate
+      responses:
+        '200':
+          description: 거래 내역 추가 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transaction:
+                    $ref: '#/components/schemas/Transaction'
+        '500':
+          description: 'code: Internal_Server_Error'
+
 
 components:
   securitySchemes:
@@ -952,4 +1033,36 @@ components:
           type: string
         createdDate:
           type: string
-        
+    Transaction:
+      type: object
+      properties:
+        creator:
+          type: string
+          description: 트랜잭션 생성한 유저의 travel member name
+        executorList:
+          type: array
+          items:
+            type: string
+            description: 트랜잭션을 수행한 유저의 travel member name list
+        targetList:
+          type: array
+          items:
+            type: string
+            description: 트랜잭션의 대상이 된 유저의 travel member name list
+        category:
+          type: string        
+        content:
+          type: string
+        type:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        paymentMethod:
+          type: string 
+          description: card / teamCash / personalCash
+        createdDate:
+          type: string
+          description: YYYY-MM-DDTHH:mm:ss+09:00
+         

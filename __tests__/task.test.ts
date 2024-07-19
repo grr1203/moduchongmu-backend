@@ -9,6 +9,7 @@ import { handler as getTravelCurrent } from '../src/ts/travel/current/get';
 import { handler as putTravel } from '../src/ts/travel/put';
 import { handler as getTravelList } from '../src/ts/travel/list/get';
 import { handler as getTransactionCurrency } from '../src/ts/transaction/currency/get';
+import { handler as postTransaction } from '../src/ts/transaction/post';
 
 describe('ModuChongmu test', () => {
   test('GET test', async () => {
@@ -18,6 +19,7 @@ describe('ModuChongmu test', () => {
     expect(res).toHaveProperty('statusCode', 200);
   });
 
+  // Friend
   test('GET friend/search', async () => {
     const parameters = { searchString: 'hyo' };
     const res = await privateFunctionTest(getFriendSearch, parameters);
@@ -36,6 +38,7 @@ describe('ModuChongmu test', () => {
     expect(res).toHaveProperty('statusCode', 200);
   });
 
+  // Travel
   test('POST travel', async () => {
     const parameters = {
       travelName: 'templestay',
@@ -80,9 +83,28 @@ describe('ModuChongmu test', () => {
     expect(res).toHaveProperty('statusCode', 200);
   });
 
-  test.only('GET transaction/currency', async () => {
+  // Transaction
+  test('GET transaction/currency', async () => {
     const parameters = { country: null };
     const res = await privateFunctionTest(getTransactionCurrency, parameters);
+    expect(res).toHaveProperty('statusCode', 200);
+  });
+
+  test.only('POST transaction', async () => {
+    const parameters = {
+      travelUid: 'abcdzz',
+      executorList: [1],
+      targetList: [1, 5],
+      category: 'food',
+      content: '커피',
+      type: 'expense',
+      amount: 1100,
+      currency: 'JPY(¥)',
+      paymentMethod: 'card',
+      // expenseSplit: { 1: 1000 },
+      createdDate: '2024-07-19T16:00:00+09:00',
+    };
+    const res = await privateFunctionTest(postTransaction, parameters);
     expect(res).toHaveProperty('statusCode', 200);
   });
 });
