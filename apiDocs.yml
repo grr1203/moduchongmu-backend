@@ -1079,6 +1079,8 @@ components:
     Transaction:
       type: object
       properties:
+        uid:
+          type: string
         creator:
           type: string
           description: 트랜잭션 생성한 유저의 travel member name

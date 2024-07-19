@@ -2,6 +2,7 @@ import { APIGatewayProxyEventV2WithLambdaAuthorizer } from 'aws-lambda';
 import mysqlUtil from '../lib/mysqlUtil';
 import { FromSchema } from 'json-schema-to-ts';
 import { formatTransaction } from '../lib/transaction';
+import { nanoid } from 'nanoid';
 
 const parameter = {
   type: 'object',
@@ -54,8 +55,10 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   const travelMemberList = await mysqlUtil.getMany('tb_travel_member', ['idx', 'memberName'], { travelIdx });
 
   // 트랜잭션 생성
+  const transactionUid = nanoid(10);
   const transactionData = {
     travelIdx,
+    uid: transactionUid,
     userIdx,
     executorList: executorList.join(','),
     targetList: targetList.join(','),
