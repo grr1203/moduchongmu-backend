@@ -301,4 +301,11 @@ functions:
           method: get
           authorizer: 
             name: Authorizer
-            
+  transaction_delete:
+    handler: build/transaction/delete.handler
+    events:
+      - httpApi:
+          path: /transaction
+          method: delete
+          authorizer:
+            name: Authorizer

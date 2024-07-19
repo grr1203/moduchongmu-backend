@@ -979,6 +979,35 @@ paths:
                     $ref: '#/components/schemas/Transaction'
         '500':
           description: 'code: Internal_Server_Error'
+    delete:
+      summary: transaction
+      description: |
+        - 거래 삭제
+      operationId: transaction/delete
+      tags:
+        - transaction
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: uid
+          in: query
+          description: 삭제할 거래의 uid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 삭제 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uid:
+                    type: string
+                    description: 삭제된 거래의 uid
+        '500':
+          description: 'code: Internal_Server_Error'
 
   /transaction/list:
     get:
