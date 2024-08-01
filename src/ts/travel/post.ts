@@ -24,7 +24,6 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     typeof parameter
   >;
   const userIdx = event.requestContext.authorizer.lambda.idx;
-  const userName = event.requestContext.authorizer.lambda.userName;
 
   // 통화 조회
   const res = await axios.get(`https://restcountries.com/v3.1/translation/${country}`);
@@ -43,7 +42,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     currency: `${currencyName}(${currencySymbol})`,
     memo,
   });
-  await mysqlUtil.create('tb_travel_member', { travelIdx, memberName: userName, userIdx, active: true });
+  await mysqlUtil.create('tb_travel_member', { travelIdx, userIdx });
 
   // 조회
   const travelData = await mysqlUtil.getOne('tb_travel', [], { hostIdx: userIdx, travelName });
