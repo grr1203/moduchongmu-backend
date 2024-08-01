@@ -19,10 +19,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
 
   // 참여중인 여행 목록 조회
   const travelIdxArray = (
-    await mysqlUtil.getMany('tb_travel_member', ['travelIdx'], {
-      where: { active: true, userIdx },
-      order: [['idx', 'desc']],
-    })
+    await mysqlUtil.getMany('tb_travel_member', ['travelIdx'], { where: { userIdx }, order: [['idx', 'desc']] })
   ).map((e) => e.travelIdx);
   const totalCount = travelIdxArray.length;
 
@@ -46,17 +43,5 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   );
   const currentTravel = travelData.length > 0 ? await formatTravel(travelData[0] as any) : null;
 
-  // 초대받았지만 참여 전인 여행 조회
-  const invitedTravelIdxArray: object[] = (
-    await mysqlUtil.getMany('tb_travel_member', ['travelIdx'], {
-      active: false,
-      userIdx,
-    })
-  ).map((e) => e.travelIdx);
-  const invitedTravelData: object[] = await mysqlUtil.raw(
-    `SELECT * FROM tb_travel WHERE idx IN (${invitedTravelIdxArray.join(', ')}) order by idx desc;`
-  );
-  const invitedTravel = invitedTravelData.length > 0 ? await formatTravel(invitedTravelData[0] as any) : null;
-
-  return { statusCode: 200, body: JSON.stringify({ currentTravel, invitedTravel, travelList, totalCount }) };
+  return { statusCode: 200, body: JSON.stringify({ currentTravel, travelList, totalCount }) };
 };

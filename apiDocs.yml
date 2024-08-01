@@ -577,9 +577,6 @@ paths:
                   currentTravel:
                     $ref: '#/components/schemas/Travel'
                     description: 현재 진행중인 여행
-                  invitedTravel:
-                    $ref: '#/components/schemas/Travel'
-                    description: 초대받은 아직 참여 전인 여행
                   travelList:
                     type: array
                     items:
