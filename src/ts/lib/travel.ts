@@ -15,18 +15,13 @@ export async function formatTravel(travelObject: {
   createdDate: string;
   memo: string;
 }) {
-  const host = (await mysqlUtil.getOne('tb_user', ['userName'], { idx: travelObject.hostIdx })).userName;
-
   // 멤버 조회
-  const memberArray = (
-    await mysqlUtil.getMany('tb_travel_member', ['memberName'], { travelIdx: travelObject.idx })
-  ).map((member) => {
-    return {
-      memberIdx: member.idx,
-      memberName: member.memberName,
-      active: member.active === 1,
-    };
-  });
+  const memberIdxArray = (await mysqlUtil.getMany('tb_travel_member', [], { travelIdx: travelObject.idx })).map(
+    (member) => member.userIdx
+  );
+  const memberArray = await mysqlUtil.getMany('tb_user', [], { idx: memberIdxArray });
+  const memberNameArray = memberArray.map((member) => member.userName);
+  const host = memberArray.find((member) => member.idx === travelObject.hostIdx)?.userName;
 
   const travel = {
     uid: travelObject.uid,
@@ -34,7 +29,7 @@ export async function formatTravel(travelObject: {
     travelName: travelObject.travelName,
     country: travelObject.country,
     city: travelObject.city,
-    memberArray,
+    memberArray: memberNameArray,
     startDate: travelObject.startDate,
     endDate: travelObject.endDate,
     currency: travelObject.currency,

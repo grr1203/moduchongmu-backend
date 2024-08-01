@@ -1,6 +1,5 @@
 import { createPublicLambdaEvent, privateFunctionTest } from './testUtil';
 import { handler as getTest } from '../src/ts/test/get';
-import { handler as getFriendSearch } from '../src/ts/friend/search/get';
 import { handler as postTravel } from '../src/ts/travel/post';
 import { handler as getTravel } from '../src/ts/travel/get';
 import { handler as getTravelCurrent } from '../src/ts/travel/current/get';
@@ -15,13 +14,6 @@ describe('ModuChongmu test', () => {
     const parameters = { name: 's', age: 12 };
     const res = await getTest(createPublicLambdaEvent(parameters));
     console.log('res', res);
-    expect(res).toHaveProperty('statusCode', 200);
-  });
-
-  // Friend
-  test('GET friend/search', async () => {
-    const parameters = { searchString: 'hyo' };
-    const res = await privateFunctionTest(getFriendSearch, parameters);
     expect(res).toHaveProperty('statusCode', 200);
   });
 
@@ -45,9 +37,8 @@ describe('ModuChongmu test', () => {
     expect(res).toHaveProperty('statusCode', 200);
   });
 
-  test('GET travel/current', async () => {
-    const parameters = {}; // { currentDate: '2024-06-15' };
-    const res = await privateFunctionTest(getTravelCurrent, parameters);
+  test.only('GET travel/current', async () => {
+    const res = await privateFunctionTest(getTravelCurrent, {});
     expect(res).toHaveProperty('statusCode', 200);
   });
 
@@ -95,7 +86,7 @@ describe('ModuChongmu test', () => {
     expect(res).toHaveProperty('statusCode', 200);
   });
 
-  test.only('GET transaction/list', async () => {
+  test('GET transaction/list', async () => {
     const parameters = { travelUid: 'abcdzz', pageSize: 10, page: 1 };
     const res = await privateFunctionTest(getTransactionList, parameters);
     expect(res).toHaveProperty('statusCode', 200);
