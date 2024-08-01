@@ -17,7 +17,7 @@ const parameter = {
     currency: { type: 'string' }, // ex) KRW(₩)
     paymentMethod: { type: 'string' }, // card, teamCash, personalCash
     expenseSplit: { type: 'object' }, // 1. { hyo : 10000, ju : 20000 } 2. { hyo : 0.5, ju : 0.5 }
-    createdDate: { type: 'string' }, // YYYY-MM-DDThh:mm:ss+TZ
+    usedDate: { type: 'string' }, // YYYY-MM-DDThh:mm:ss+TZ
   },
   required: [
     'travelUid',
@@ -29,7 +29,7 @@ const parameter = {
     'amount',
     'currency',
     'paymentMethod',
-    'createdDate',
+    'usedDate',
   ],
 } as const;
 
@@ -46,7 +46,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     currency,
     paymentMethod,
     expenseSplit,
-    createdDate,
+    usedDate,
   } = JSON.parse(event.body) as FromSchema<typeof parameter>;
   const userIdx = event.requestContext.authorizer.lambda.idx;
 
@@ -71,7 +71,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     currency,
     paymentMethod,
     expenseSplit,
-    createdDate,
+    usedDate,
   };
   await mysqlUtil.create('tb_transaction', transactionData);
   const transaction = await formatTransaction(travelMemberList as any, transactionData as any);

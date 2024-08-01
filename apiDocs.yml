@@ -1054,6 +1054,9 @@ components:
         paymentMethod:
           type: string 
           description: card / teamCash / personalCash
+        usedDate:
+          type: string
+          description: YYYY-MM-DD hh:mm:ss
         createdDate:
           type: string
           description: YYYY-MM-DDTHH:mm:ss+09:00

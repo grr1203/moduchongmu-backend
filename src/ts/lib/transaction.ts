@@ -2,7 +2,7 @@ import mysqlUtil from './mysqlUtil';
 
 export async function formatTransaction(
   travelMemberList: number[], // user idx list
-  tansactionObject: {
+  transactionObject: {
     idx: number;
     uid: string;
     travelIdx: number;
@@ -16,30 +16,31 @@ export async function formatTransaction(
     currency: string;
     paymentMethod: string;
     expenseSplit?: object;
-    createdDate: string;
+    usedDate: string;
+    createdDate?: string;
   }
 ) {
-  const recordBy = (await mysqlUtil.getOne('tb_user', ['userName'], { idx: tansactionObject.userIdx })).userName;
-  const executorList = (await mysqlUtil.getMany('tb_user', ['userName'], { idx: tansactionObject.executorList })).map(
+  const recordBy = (await mysqlUtil.getOne('tb_user', ['userName'], { idx: transactionObject.userIdx })).userName;
+  const executorList = (await mysqlUtil.getMany('tb_user', ['userName'], { idx: transactionObject.executorList })).map(
     (user) => user.userName
   );
-  const targetList = (await mysqlUtil.getMany('tb_user', ['userName'], { idx: tansactionObject.targetList })).map(
+  const targetList = (await mysqlUtil.getMany('tb_user', ['userName'], { idx: transactionObject.targetList })).map(
     (user) => user.userName
   );
 
   const transaction = {
-    uid: tansactionObject.uid,
+    uid: transactionObject.uid,
     recordBy,
     executorList,
     targetList,
-    category: tansactionObject.category,
-    content: tansactionObject.content,
-    type: tansactionObject.type,
-    amount: tansactionObject.amount,
-    currency: tansactionObject.currency,
-    paymentMethod: tansactionObject.paymentMethod,
-    expenseSplit: await transformExpenseSplitObject(tansactionObject.expenseSplit, travelMemberList),
-    createDate: tansactionObject.createdDate,
+    category: transactionObject.category,
+    content: transactionObject.content,
+    type: transactionObject.type,
+    amount: transactionObject.amount,
+    currency: transactionObject.currency,
+    paymentMethod: transactionObject.paymentMethod,
+    expenseSplit: await transformExpenseSplitObject(transactionObject.expenseSplit, travelMemberList),
+    createDate: transactionObject.createdDate,
   };
   return transaction;
 }

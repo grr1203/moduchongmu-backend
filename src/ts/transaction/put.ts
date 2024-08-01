@@ -17,7 +17,7 @@ const parameter = {
     currency: { type: 'string' },
     paymentMethod: { type: 'string' },
     expenseSplit: { type: 'object' },
-    createdDate: { type: 'string' },
+    usedDate: { type: 'string' },
   },
   required: ['uid'],
 } as const;
@@ -35,7 +35,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     currency,
     paymentMethod,
     expenseSplit,
-    createdDate,
+    usedDate,
   } = JSON.parse(event.body) as FromSchema<typeof parameter>;
   const userIdx = event.requestContext.authorizer.lambda.idx;
 
@@ -53,7 +53,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   currency && (updateObject.currency = currency);
   paymentMethod && (updateObject.paymentMethod = paymentMethod);
   expenseSplit && (updateObject.expenseSplit = expenseSplit);
-  createdDate && (updateObject.createdDate = createdDate);
+  usedDate && (updateObject.usedDate = usedDate);
 
   await mysqlUtil.update('tb_transaction', { userIdx }, { uid });
 
