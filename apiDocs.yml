@@ -779,7 +779,7 @@ paths:
                   description: 거래 내역의 내용
                 type:
                   type: string
-                  description: expense | income | transfer
+                  description: expense | transfer
                 amount:
                   type: number
                   description: currency 기준 거래 금액 절대값
