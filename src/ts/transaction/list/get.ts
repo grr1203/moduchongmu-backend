@@ -27,11 +27,9 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   if (totalCount < endIndex) endIndex = totalCount;
 
   const transactionArray = await mysqlUtil.getMany('tb_transaction', [], { travelIdx: travel.idx });
-  const travelMemberList = await mysqlUtil.getMany('tb_travel_member', ['idx', 'memberName'], {
-    travelIdx: travel.idx,
-  });
-  const transactionList = transactionArray.map((transaction) =>
-    formatTransaction(travelMemberList as any, transaction as any)
+  const travelMemberList = await mysqlUtil.getMany('tb_travel_member', ['userIdx'], { travelIdx: travel.idx });
+  const transactionList = await Promise.all(
+    transactionArray.map(async (transaction) => await formatTransaction(travelMemberList as any, transaction as any))
   );
 
   return { statusCode: 200, body: JSON.stringify({ transactionList, totalCount }) };

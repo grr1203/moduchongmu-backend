@@ -52,7 +52,9 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
 
   const travel = await mysqlUtil.getOne('tb_travel', [], { uid: travelUid });
   const travelIdx = travel.idx;
-  const travelMemberList = await mysqlUtil.getMany('tb_travel_member', ['idx', 'memberName'], { travelIdx });
+  const travelMemberList = (await mysqlUtil.getMany('tb_travel_member', ['userIdx'], { travelIdx })).map(
+    (member) => member.userIdx
+  );
 
   // 트랜잭션 생성
   const transactionUid = nanoid(10);
@@ -72,7 +74,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     createdDate,
   };
   await mysqlUtil.create('tb_transaction', transactionData);
-  const transaction = formatTransaction(travelMemberList as any, transactionData as any);
+  const transaction = await formatTransaction(travelMemberList as any, transactionData as any);
 
   return { statusCode: 200, body: JSON.stringify({ transaction }) };
 };

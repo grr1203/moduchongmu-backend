@@ -37,7 +37,7 @@ describe('ModuChongmu test', () => {
     expect(res).toHaveProperty('statusCode', 200);
   });
 
-  test.only('GET travel/current', async () => {
+  test('GET travel/current', async () => {
     const res = await privateFunctionTest(getTravelCurrent, {});
     expect(res).toHaveProperty('statusCode', 200);
   });
@@ -86,7 +86,7 @@ describe('ModuChongmu test', () => {
     expect(res).toHaveProperty('statusCode', 200);
   });
 
-  test('GET transaction/list', async () => {
+  test.only('GET transaction/list', async () => {
     const parameters = { travelUid: 'abcdzz', pageSize: 10, page: 1 };
     const res = await privateFunctionTest(getTransactionList, parameters);
     expect(res).toHaveProperty('statusCode', 200);

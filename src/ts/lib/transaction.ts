@@ -1,5 +1,7 @@
-export function formatTransaction(
-  travelMemberList: [{ idx: number; memberName: string }],
+import mysqlUtil from './mysqlUtil';
+
+export async function formatTransaction(
+  travelMemberList: number[], // user idx list
   tansactionObject: {
     idx: number;
     uid: string;
@@ -17,34 +19,39 @@ export function formatTransaction(
     createdDate: string;
   }
 ) {
+  const recordBy = (await mysqlUtil.getOne('tb_user', ['userName'], { idx: tansactionObject.userIdx })).userName;
+  const executorList = (await mysqlUtil.getMany('tb_user', ['userName'], { idx: tansactionObject.executorList })).map(
+    (user) => user.userName
+  );
+  const targetList = (await mysqlUtil.getMany('tb_user', ['userName'], { idx: tansactionObject.targetList })).map(
+    (user) => user.userName
+  );
+
   const transaction = {
     uid: tansactionObject.uid,
-    recordBy: travelMemberList.find((member) => member.idx === tansactionObject.userIdx)?.memberName,
-    executorList: tansactionObject.executorList.split(',').map((idx) => {
-      return travelMemberList.find((member) => member.idx === Number(idx))?.memberName;
-    }),
-    targetList: tansactionObject.targetList.split(',').map((idx) => {
-      return travelMemberList.find((member) => member.idx === Number(idx))?.memberName;
-    }),
+    recordBy,
+    executorList,
+    targetList,
     category: tansactionObject.category,
     content: tansactionObject.content,
     type: tansactionObject.type,
     amount: tansactionObject.amount,
     currency: tansactionObject.currency,
     paymentMethod: tansactionObject.paymentMethod,
-    expenseSplit: transformExpenseSplitObject(tansactionObject.expenseSplit, travelMemberList),
+    expenseSplit: await transformExpenseSplitObject(tansactionObject.expenseSplit, travelMemberList),
     createDate: tansactionObject.createdDate,
   };
   return transaction;
 }
 
-function transformExpenseSplitObject(expenseSplit, travelMemberList) {
+async function transformExpenseSplitObject(expenseSplit, travelMemberList) {
   const newExpenseSplit = {};
   for (const key in expenseSplit) {
     if (expenseSplit.hasOwnProperty(key)) {
-      const member = travelMemberList.find((item) => item.idx === parseInt(key));
-      if (member) {
-        newExpenseSplit[member.memberName] = expenseSplit[key];
+      const memberIdx = travelMemberList.find((idx) => idx === parseInt(key));
+      if (memberIdx) {
+        const member = await mysqlUtil.getOne('tb_user', ['userName'], { idx: memberIdx });
+        newExpenseSplit[member.userName] = expenseSplit[key];
       }
     }
   }

@@ -58,10 +58,10 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   await mysqlUtil.update('tb_transaction', { userIdx }, { uid });
 
   const transactionData = await mysqlUtil.getOne('tb_transaction', [], { uid });
-  const travelMemberList = await mysqlUtil.getMany('tb_travel_member', ['idx', 'memberName'], {
+  const travelMemberList = await mysqlUtil.getMany('tb_travel_member', ['userIdx'], {
     travelIdx: transactionData.travelIdx,
   });
-  const transaction = formatTransaction(travelMemberList as any, transactionData as any);
+  const transaction = await formatTransaction(travelMemberList as any, transactionData as any);
 
   return { statusCode: 200, body: JSON.stringify({ transaction }) };
 };
