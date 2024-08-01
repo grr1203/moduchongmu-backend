@@ -429,8 +429,7 @@ paths:
       description: |
         - 여행 정보 수정
         - 정산 완료 시 settlementDone: true로 요청
-        - 멤버 수정은 삭제에 대해서만 처리, 삭제할 인원을 제외한 나머지 멤버를 memberArray에 넣어 요청
-        - 여행에 멤버 추가는 초대 API로 처리
+        - 멤버 수정은 불가, 초대는 링크 / 삭제는 삭제 API로 처리
         - 커버 이미지 수정 요청 시 coverImage: true로 요청, response의 postingImageUrl에 s3 presigned url 전달
       operationId: travel/put
       tags:
@@ -464,11 +463,6 @@ paths:
                 settlementDone:
                   type: boolean
                   description: 정산 완료 여부 수정 요청시
-                memberArray:
-                  type: array
-                  items:
-                    type: string
-                  description: 수정시 기존유저 + 새유저 - 삭제유저 포함된 전체 멤버 이름이 있는 string Array
                 coverImage:
                   type: boolean
                   description: 여행 방 커버 이미지 수정 요청시
@@ -626,6 +620,43 @@ paths:
               schema:
                 type: object
                 nullable: true
+        '500':
+          description: 'code: Internal_Server_Error'
+
+  /travel/member:
+    delete:
+      summary: travel/member
+      description: |
+        - 여행 방 탈퇴
+        - 방장은 다른 유저 강퇴 가능
+      operationId: travel/member/delete
+      tags:
+        - travel
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: travelUid
+          in: query
+          description: 멤버를 삭제할 여행 방의 uid
+          required: true
+          schema:
+            type: string
+        - name: memberName
+          in: query
+          description: 삭제할 멤버의 이름
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 삭제 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: true
+        '403':
+          description: 'code: NOT_HOST / code: NOT_MEMBER'
         '500':
           description: 'code: Internal_Server_Error'
 

@@ -16,7 +16,6 @@ const parameter = {
     memo: { type: 'string' },
     currency: { type: 'string' },
     settlementDone: { type: 'boolean' },
-    memberArray: { type: 'array', items: { type: 'string' } }, // 멤버 삭제시에만 사용
     coverImage: { type: 'boolean' }, // true면 업로드 url 전달
   },
   required: ['uid'],
@@ -34,7 +33,6 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     currency,
     memo,
     settlementDone,
-    memberArray: newMemberArray,
     coverImage,
   } = JSON.parse(event.body) as FromSchema<typeof parameter>;
   const userIdx = event.requestContext.authorizer.lambda.idx;
@@ -52,16 +50,6 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   currency && (updateObject.currency = currency);
   memo && (updateObject.memo = memo);
   typeof settlementDone === 'boolean' && (updateObject.settlementDone = settlementDone);
-
-  // 멤버 삭제만 처리
-  if (Array.isArray(newMemberArray)) {
-    const originMemberArray = (
-      await mysqlUtil.getMany('tb_travel_member', ['memberName'], { travelIdx: travelData.idx })
-    ).map((member) => member.memberName);
-    for (const memberName of originMemberArray.filter((memberName) => !newMemberArray.includes(memberName))) {
-      await mysqlUtil.deleteMany('tb_travel_member', { travelIdx: travelData.idx, memberName });
-    }
-  }
 
   // 커버 이미지 수정 요청시 s3 presigned url 발급
   const postingImageUrl = coverImage ? await getPresignedPostUrl(getTravelCoverImageKey(uid)) : null;
