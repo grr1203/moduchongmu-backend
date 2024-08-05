@@ -969,6 +969,44 @@ paths:
                     type: number
         '500':
           description: 'code: Internal_Server_Error'
+  
+  /transaction/exchange:
+    get:
+      summary: transaction/exchange
+      description: |
+        - 환율 정보 조회
+        - 환율 정보는 하루에 한번 KST 09:00에 업데이트
+      operationId: transaction/exchange/get
+      tags:
+        - transaction
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: currency
+          in: query
+          description: 조회할 통화 (ex. KRW)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 환율 정보 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  exchangeList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        currency:
+                          type: string
+                        rate:
+                          type: number
+                          description: KRW = 1.00 기준 환율
+        '500':
+          description: 'code: Internal_Server_Error'
 
 components:
   securitySchemes:
