@@ -8,6 +8,7 @@ import { handler as getTravelList } from '../src/ts/travel/list/get';
 import { handler as getTransactionCurrency } from '../src/ts/transaction/currency/get';
 import { handler as postTransaction } from '../src/ts/transaction/post';
 import { handler as getTransactionList } from '../src/ts/transaction/list/get';
+import { handler as postTransactionExchangeRate } from '../src/ts/transaction/exchangeRate/post';
 
 describe('ModuChongmu test', () => {
   test('GET test', async () => {
@@ -86,9 +87,14 @@ describe('ModuChongmu test', () => {
     expect(res).toHaveProperty('statusCode', 200);
   });
 
-  test.only('GET transaction/list', async () => {
+  test('GET transaction/list', async () => {
     const parameters = { travelUid: 'abcdzz', pageSize: 10, page: 1 };
     const res = await privateFunctionTest(getTransactionList, parameters);
     expect(res).toHaveProperty('statusCode', 200);
   });
+
+  test('POST transaction_exchange_rate', async () => {
+    const res = await privateFunctionTest(postTransactionExchangeRate, {});
+    expect(res).toHaveProperty('statusCode', 200);
+  }, 120000);
 });

@@ -47,6 +47,7 @@ provider:
     # http_api_gateway_id:
     #   Ref: HttpApi
     JWT_SECRET_KEY: ${ssm:/${self:service}/${env:STAGE, "dev"}/jwt_secret_key}
+    API_LAYER_KEY: ${ssm:/${self:service}/${env:STAGE, "dev"}/api_layer_key}
 
 custom:
   esbuild:
@@ -316,4 +317,18 @@ functions:
           path: /transaction
           method: delete
           authorizer:
+            name: Authorizer
+  transaction_exhange_post:
+    handler: build/transaction/exchange/post.handler
+    events:
+      - schedule:
+          rate: cron(0 9 * * ? *)
+          enabled: true
+  transaction_exhange_get:
+    handler: build/transaction/exchange/get.handler
+    events:
+      - httpApi:
+          path: /transaction/exchange
+          method: get
+          authorizer: 
             name: Authorizer
