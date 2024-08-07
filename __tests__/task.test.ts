@@ -9,6 +9,7 @@ import { handler as getTransactionCurrency } from '../src/ts/transaction/currenc
 import { handler as postTransaction } from '../src/ts/transaction/post';
 import { handler as getTransactionList } from '../src/ts/transaction/list/get';
 import { handler as postTransactionExchangeRate } from '../src/ts/transaction/exchangeRate/post';
+import { handler as postTravelSettlement } from '../src/ts/travel/settlement/post';
 
 describe('ModuChongmu test', () => {
   test('GET test', async () => {
@@ -22,7 +23,7 @@ describe('ModuChongmu test', () => {
   test('POST travel', async () => {
     const parameters = {
       travelName: 'templestay',
-      country: 'korea',
+      country: '대한민국',
       city: 'seoul',
       startDate: '2024-06-14',
       endDate: '2024-06-22',
@@ -93,8 +94,14 @@ describe('ModuChongmu test', () => {
     expect(res).toHaveProperty('statusCode', 200);
   });
 
-  test('POST transaction_exchange_rate', async () => {
+  test('POST transaction/exchangeRate', async () => {
     const res = await privateFunctionTest(postTransactionExchangeRate, {});
     expect(res).toHaveProperty('statusCode', 200);
   }, 120000);
+
+  test.only('POST travel/settlement', async () => {
+    const parameters = { travelUid: 'abcdzz' };
+    const res = await privateFunctionTest(postTravelSettlement, parameters);
+    expect(res).toHaveProperty('statusCode', 200);
+  }, 30000);
 });

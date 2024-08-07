@@ -268,6 +268,14 @@ functions:
           method: get
           authorizer: 
             name: Authorizer
+  travel_settlement_post:
+    handler: build/travel/settlement/post.handler
+    events:
+      - httpApi:
+          path: /travel/settlement
+          method: post
+          authorizer: 
+            name: Authorizer
 
   # Admin
   admin_city_post:
@@ -332,3 +340,4 @@ functions:
           method: get
           authorizer: 
             name: Authorizer
+  

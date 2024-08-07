@@ -698,6 +698,76 @@ paths:
         '500':
           description: 'code: Internal_Server_Error'
 
+  /travel/settlement:
+    post:
+      summary: travel/settlement
+      description: |
+        - 여행 방의 모든 거래 내역을 계산해 정산 데이터를 생성한다.
+      operationId: travel/settlement/post
+      tags:
+        - travel
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                travelUid:
+                  type: string
+                  description: 정산할 여행 방의 uid
+              required:
+                - travelUid
+      responses:
+        '200':
+          description: 정산 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  settlementList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        sender:
+                          type: string
+                          description: 송금해야 하는 사람
+                        receiver:
+                          type: string
+                          description: 송금 받아야 하는 사람
+                        amount:
+                          type: number
+                          description: 송금 금액(절대값)
+                        currency:
+                          type: string
+                          description: 통화
+                  otherCurrencySettlementList:
+                    type: object
+                    items:
+                      type: array
+                      properties:
+                        KRW:
+                          type: object
+                          description: 다른 통화 사용시 해당 통화(key)의 정산 내역(ex. KRW)
+                          properties:
+                            sender:
+                              type: string
+                              description: 송금해야 하는 사람
+                            receiver:
+                              type: string
+                              description: 송금 받아야 하는 사람
+                            amount:
+                              type: number
+                              description: 송금 금액(절대값)
+                            currency:
+                              type: string
+                              description: 통화
+        '500':
+          description: 'code: Internal_Server_Error'
+
   # Transaction
   /transaction/currency:
     get:
@@ -795,6 +865,7 @@ paths:
                     - N빵이 아닌 경우 사용
                     - 1. { travelMemberIdx : amount } 형태로 입력 가능 (ex 1000)
                     - 2. { travelMemberIdx : ratio } 형태로 입력 가능 (ex 0.2)
+                    - 3. 이미 할당된 금액 / 비율 데이터를 삭제하라면 { }(빈 객체)를 보내야 한다.
                     - 입력하지 않은 나머지 멤버들끼리 남은 금액을 N빵한다.
                 createdDate:
                   type: string
