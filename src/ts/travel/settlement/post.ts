@@ -67,7 +67,8 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     // 메인 통화 소비 내역 총합
     totalByMember[userIdx].expense = Math.round(totalByMember[userIdx].expense * Math.pow(10, 3)) / Math.pow(10, 3);
     totalByMember[userIdx].usage = Math.round(totalByMember[userIdx].usage * Math.pow(10, 3)) / Math.pow(10, 3);
-    totalByMember[userIdx].total = totalByMember[userIdx].expense - totalByMember[userIdx].usage;
+    totalByMember[userIdx].total =
+      Math.round((totalByMember[userIdx].expense - totalByMember[userIdx].usage) * Math.pow(10, 3)) / Math.pow(10, 3);
     if (totalByMember[userIdx].total === 0) sameList.push(userIdx);
     else {
       totalByMember[userIdx].total < 0 ? senderList.push(userIdx) : receiverList.push(userIdx);
@@ -107,7 +108,12 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   // 3. 송금 리스트 생성
   const settlementList = [];
   const processSettlement = (sender, receiver, amount, currency?) => {
-    const settlement = { sender, receiver, amount: Math.abs(amount), currency: currency || travel.currency.split('(')[0] };
+    const settlement = {
+      sender,
+      receiver,
+      amount: Math.abs(amount),
+      currency: currency || travel.currency.split('(')[0],
+    };
     if (currency) {
       otherCurrencySettlementList[currency] ??= [];
       otherCurrencySettlementList[currency].push(settlement);
