@@ -11,7 +11,7 @@ info:
     name: MIT
     url: https://spdx.org/licenses/MIT
 servers:
-  - url: 'https://x05rsb7lj6.execute-api.ap-northeast-2.amazonaws.com/dev'
+  - url: 'https://x05rsb7lj6.execute-api.ap-northeast-2.amazonaws.com'
     description: Dev server
 paths:
   # test
