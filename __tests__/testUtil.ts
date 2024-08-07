@@ -26,7 +26,7 @@ export const createPublicLambdaEvent = (parameters: { [key: string]: any }): API
     rawPath: '',
     rawQueryString: '',
     headers: {
-      origin: 'https://app.plicar.ai',
+      origin: 'https://test.ai',
     },
     queryStringParameters: parameters,
     body: JSON.stringify(parameters),
@@ -60,7 +60,7 @@ export const createPublicLambdaEventPost = (body: { [key: string]: any }): APIGa
     rawPath: '',
     rawQueryString: '',
     headers: {
-      origin: 'https://app.plicar.ai',
+      origin: 'https://test.ai',
     },
     requestContext: {
       accountId: 'testAccountId',
@@ -98,7 +98,7 @@ export const createPrivateLambdaEvent = async (
     routeKey: '',
     rawPath: '',
     rawQueryString: '',
-    headers: { authorization: `Bearer ${userAccessToken}`, origin: 'https://app.plicar.ai' },
+    headers: { authorization: `Bearer ${userAccessToken}`, origin: 'https://test.ai' },
     queryStringParameters: parameters,
     body: JSON.stringify(parameters),
     requestContext: {
