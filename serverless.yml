@@ -160,32 +160,6 @@ functions:
       - httpApi:
           path: /signin/google
           method: post
-  
-  # Friend
-  friend_search_get:
-    handler: build/friend/search/get.handler
-    events:
-      - httpApi:
-          path: /friend/search
-          method: get
-          authorizer: 
-            name: Authorizer
-  friend_post:
-    handler: build/friend/post.handler
-    events:
-      - httpApi:
-          path: /friend
-          method: post
-          authorizer: 
-            name: Authorizer
-  friend_get:
-    handler: build/friend/get.handler
-    events:
-      - httpApi:
-          path: /friend
-          method: get
-          authorizer: 
-            name: Authorizer
 
   # Travel
   travel_post:
@@ -236,28 +210,12 @@ functions:
           method: delete
           authorizer: 
             name: Authorizer
-  travel_enter_post:
-    handler: build/travel/enter/post.handler
-    events:
-      - httpApi:
-          path: /travel/enter
-          method: post
-          authorizer: 
-            name: Authorizer
   travel_invite_post:
     handler: build/travel/invite/post.handler
     events:
       - httpApi:
           path: /travel/invite
           method: post
-          authorizer: 
-            name: Authorizer
-  travel_invite_put:
-    handler: build/travel/invite/put.handler
-    events:
-      - httpApi:
-          path: /travel/invite
-          method: put
           authorizer: 
             name: Authorizer
   travel_city_get:
@@ -326,17 +284,17 @@ functions:
           method: delete
           authorizer:
             name: Authorizer
-  transaction_exhange_post:
-    handler: build/transaction/exchange/post.handler
+  transaction_exhangeRate_post:
+    handler: build/transaction/exchangeRate/post.handler
     events:
       - schedule:
           rate: cron(0 9 * * ? *)
           enabled: true
-  transaction_exhange_get:
-    handler: build/transaction/exchange/get.handler
+  transaction_exhangeRate_get:
+    handler: build/transaction/exchangeRate/get.handler
     events:
       - httpApi:
-          path: /transaction/exchange
+          path: /transaction/exchangeRate
           method: get
           authorizer: 
             name: Authorizer
