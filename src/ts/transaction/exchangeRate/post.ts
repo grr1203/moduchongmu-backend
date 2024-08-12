@@ -16,7 +16,8 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   const currencyList = (await mysqlUtil.getMany('tb_transaction_exchange_rate', [], {})).map((e) => e.currency);
   await Promise.all(
     currencyList.map(async (currency) => {
-      await mysqlUtil.update('tb_transaction_exchange_rate', { rate: exchangeRateList[currency] }, { currency });
+      exchangeRateList[currency] &&
+        (await mysqlUtil.update('tb_transaction_exchange_rate', { rate: exchangeRateList[currency] }, { currency }));
     })
   );
 
