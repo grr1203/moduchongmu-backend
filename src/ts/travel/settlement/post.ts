@@ -181,9 +181,37 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   }
   console.log('otherCurrencySettlementList', otherCurrencySettlementList);
 
-  // 4. 개인 내역서 & 전체 내역서 생성 (todo)
+  // 4. 환율 적용 (KRW)
+  const exchangeRate = (
+    await mysqlUtil.getOne('tb_transaction_exchange_rate', [], {
+      currency: travel.currency.split('(')[0],
+    })
+  ).rate;
+  settlementList.forEach((settlement) => {
+    settlement.originAmount = settlement.amount;
+    settlement.originCurrency = settlement.currency;
+    settlement.exchangeRate = exchangeRate;
+    settlement.amount = Math.round(settlement.amount / exchangeRate);
+    settlement.currency = 'KRW';
+  });
 
-  // 5. pdf 생성 (todo)
+  // 다른 통화
+  await Promise.all(
+    Object.keys(otherCurrencySettlementList).map(async (currency) => {
+      const exchangeRate = (await mysqlUtil.getOne('tb_transaction_exchange_rate', [], { currency })).rate;
+      otherCurrencySettlementList[currency].forEach((settlement) => {
+        settlement.originAmount = settlement.amount;
+        settlement.originCurrency = settlement.currency;
+        settlement.exchangeRate = exchangeRate;
+        settlement.amount = Math.round(settlement.amount / exchangeRate);
+        settlement.currency = 'KRW';
+      });
+    })
+  );
+
+  // 5. 개인 내역서 & 전체 내역서 생성 (todo)
+
+  // 6. pdf 생성 (todo)
 
   return { statusCode: 200, body: JSON.stringify({ settlementList, otherCurrencySettlementList }) };
 };
