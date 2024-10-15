@@ -29,7 +29,7 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
     }
 
     let user = await mysqlUtil.getOne('tb_user', [], { userEmail });
-    const processType = user?.userName ? 'signin' : 'signup';
+    const processType = !user ? 'signup' : user?.userName ? 'signin': 'signup-ing';
     // 회원가입
     if (processType === 'signup') {
       await mysqlUtil.create('tb_user', { userEmail, registerType: USER_REGISTER_TYPE.GOOGLE, marketingAgreed: 1 });

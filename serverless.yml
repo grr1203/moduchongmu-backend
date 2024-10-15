@@ -148,6 +148,18 @@ functions:
             name: Authorizer
 
   # Signin
+  signin_naver_post:
+    handler: build/signin/naver/post.handler
+    events:
+      - httpApi:
+          path: /signin/naver
+          method: post
+  signin_kakao_post:
+    handler: build/signin/kakao/post.handler
+    events:
+      - httpApi:
+          path: /signin/kakao
+          method: post
   signin_apple_post:
     handler: build/signin/apple/post.handler
     events:
