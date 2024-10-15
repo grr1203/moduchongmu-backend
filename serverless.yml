@@ -172,6 +172,20 @@ functions:
       - httpApi:
           path: /signin/google
           method: post
+  
+  # Token
+  token_access_get:
+    handler: build/token/access/get.handler
+    events:
+      - httpApi:
+          path: /token/access
+          method: get
+  token_refresh_delete:
+    handler: build/token/refresh/delete.handler
+    events:
+      - httpApi:
+          path: /token/refresh
+          method: delete
 
   # Travel
   travel_post:
