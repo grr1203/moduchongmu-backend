@@ -52,10 +52,25 @@ export async function verifyGoogleCode(idToken: string) {
 }
 
 // Kakao
-export async function verifyKakaoCode(kakaoAccessToken: string) {
+const KAKAO_REST_API_KEY = 'fe374f8587980d4e1ea4548dbbaced79';
+
+export async function verifyKakaoCode(code: string) {
+  // Authorization Code로 Access Token 발급
+  let res = await axios.post(
+    `https://kauth.kakao.com/oauth/token`,
+    {
+      grant_type: 'authorization_code',
+      client_id: KAKAO_REST_API_KEY,
+      redirect_uri: 'http://localhost:5173/signin/redirect?type=kakao',
+      code,
+    },
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+  );
+  console.log('[get kakao token response]', res);
+
   // Access Token으로 user data 조회
-  const res = await axios.get('https://kapi.kakao.com/v2/user/me', {
-    headers: { Authorization: `Bearer ${kakaoAccessToken}` },
+  res = await axios.get('https://kapi.kakao.com/v2/user/me', {
+    headers: { Authorization: `Bearer ${res.data.access_token}` },
   });
   console.log('[get kakao user info response]', res);
   const { email, nickname: name } = res.data.kakao_account;
@@ -64,10 +79,25 @@ export async function verifyKakaoCode(kakaoAccessToken: string) {
 }
 
 // Naver
-export async function verifyNaverToken(accessToken: string) {
+const NAVER_CLIENT_ID = "OVSo8apILt8vu2sS4W8V"
+const NAVER_CLIENT_SECRET = "3FOgn_W_Ub"
+
+export async function verifyNaverCode(code: string) {
+  // Authorization Code로 Access Token 발급
+  let res = await axios.get(`https://nid.naver.com/oauth2.0/token`, {
+    params: {
+      grant_type: 'authorization_code', // 발급
+      client_id: NAVER_CLIENT_ID,
+      client_secret: NAVER_CLIENT_SECRET,
+      code,
+      state: 'naver', // cross-site request forgery 방지를 위한 상태 토큰
+    },
+  });
+  console.log('[get naver token response]', res);
+
   // Access Token으로 user data 조회
-  const res = await axios.get('https://openapi.naver.com/v1/nid/me', {
-    headers: { Authorization: `Bearer ${accessToken}` },
+  res = await axios.get('https://openapi.naver.com/v1/nid/me', {
+    headers: { Authorization: `Bearer ${res.data.access_token}` },
   });
   console.log('[get naver user info response]', res);
   const { email, name } = res.data.response;

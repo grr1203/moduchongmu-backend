@@ -8,20 +8,20 @@ import { verifyKakaoCode } from '../../lib/loginUtil';
 const parameter = {
   type: 'object',
   properties: {
-    token: { type: 'string' }, // kakao에서 발급한 access token
+    code: { type: 'string' }, // kakao에서 발급한 access code
   },
-  required: ['token'],
+  required: ['code'],
 } as const;
 
 export const handler = async (event: APIGatewayProxyEventV2) => {
   console.log('[event]', event);
-  const { token } = JSON.parse(event.body) as FromSchema<typeof parameter>;
+  const { code } = JSON.parse(event.body) as FromSchema<typeof parameter>;
 
   try {
-    // kakao server에서 발급한 token 검증 및 payload 조회
+    // kakao server에서 발급한 code 검증 및 payload 조회
     let userEmail: string;
     try {
-      const { email } = await verifyKakaoCode(token);
+      const { email } = await verifyKakaoCode(code);
       userEmail = email;
     } catch (err) {
       console.log('[verifyKakaoCode failed]', err);
@@ -29,12 +29,12 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
     }
 
     let user = await mysqlUtil.getOne('tb_user', [], { userEmail });
-    const processType = user?.userName ? 'signin' : 'signup';
+    const processType = !user ? 'signup' : user?.userName ? 'signin': 'signup-ing';
     // 회원가입
     if (processType === 'signup') {
       await mysqlUtil.create('tb_user', { userEmail, registerType: USER_REGISTER_TYPE.KAKAO, marketingAgreed: 1 });
       user = await mysqlUtil.getOne('tb_user', [], { userEmail });
-    }
+    } 
 
     // 로그인
     await mysqlUtil.updateTimestamp('tb_user', 'lastLoginDate', { idx: user.idx });
