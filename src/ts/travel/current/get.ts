@@ -10,6 +10,10 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   const travelIdxArray = (await mysqlUtil.getMany('tb_travel_member', ['travelIdx'], { userIdx })).map(
     (e) => e.travelIdx
   );
+  if (travelIdxArray.length === 0) {
+    return { statusCode: 200, body: JSON.stringify({ travel: null }) };
+  }
+
   let travelData = (
     await mysqlUtil.raw(`SELECT * FROM tb_travel WHERE idx IN (
     ${travelIdxArray.join(', ')}) AND startDate <= NOW() AND endDate >= NOW() limit 1;`)
@@ -24,7 +28,6 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
       )
     )[0];
   }
-
   const travel = travelData ? await formatTravel(travelData as any) : null;
 
   return { statusCode: 200, body: JSON.stringify({ travel }) };
