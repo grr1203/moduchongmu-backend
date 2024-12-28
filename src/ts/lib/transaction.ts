@@ -40,6 +40,7 @@ export async function formatTransaction(
     currency: transactionObject.currency,
     paymentMethod: transactionObject.paymentMethod,
     expenseSplit: await transformExpenseSplitObject(transactionObject.expenseSplit, travelMemberList),
+    usedDate: transactionObject.usedDate,
     createDate: transactionObject.createdDate,
   };
   return transaction;

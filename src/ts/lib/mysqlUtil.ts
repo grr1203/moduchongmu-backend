@@ -100,7 +100,11 @@ async function getMany(
   console.log(`mysql getMany() table: ${table}, attrs: ${attributes}, findOptions: ${JSON.stringify(findOptions)}`);
 
   let queryPromise = db.select(...attributes).from(table);
-  findOptions.order && queryPromise.orderBy(findOptions.order[0][0], findOptions.order[0][1]);
+  if (findOptions.order) {
+    findOptions.order.forEach(([column, direction]: [string, string]) => {
+      queryPromise = queryPromise.orderBy(column, direction);
+    });
+  }
   findOptions.offset && queryPromise.offset(findOptions.offset);
   findOptions.limit && queryPromise.limit(findOptions.limit);
   findOptions.where &&
