@@ -117,7 +117,7 @@ paths:
                 statusMessage:
                   type: string
                   description: 상태 메시지 수정 요청시
-                profileIamge:
+                profileImage:
                   type: boolean
                   description: 프로필 이미지 수정 요청시
       responses:
@@ -343,6 +343,61 @@ paths:
           description: 'code: Verification_Failed'
         '500':
           description: 'code: Internal_Server_Error'
+
+  # Token
+  /token/access:
+    get:
+      summary: token/access
+      description: |
+        - refreshToken을 이용해 accessToken을 재발급한다.
+      operationId: token/access/get
+      tags:
+        - token
+      parameters:
+        - name: refreshToken
+          in: query
+          description: accessToken을 발급받기 위한 refreshToken
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: accessToken 재발급 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: 재발급된 accessToken
+        '401':
+          description: 'code: Invalid_Token'
+        '404':
+          description: 'code: User_Not_Found'
+        '500':
+          description: 'code: Internal_Server_Error'
+  /token/refresh:
+    delete:
+      summary: token/refresh
+      description: |
+        - 유저의 refreshToken을 삭제한다.(로그아웃)
+      operationId: token/refresh/delete
+      tags:
+        - token
+      security: 
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 삭제 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: true
+        '500':
+          description: 'code: Internal_Server_Error'
+
   
   # Travel
   /travel:
@@ -369,6 +424,9 @@ paths:
                 country:
                   type: string
                   description: 여행지
+                city:
+                  type: string
+                  description: 도시
                 startDate:
                   type: string
                   description: 여행 시작일, YYYY-MM-DD의 Date 형식
@@ -381,6 +439,7 @@ paths:
               required:
                 - travelName
                 - country
+                - city
                 - startDate
                 - endDate
       responses:
@@ -400,7 +459,9 @@ paths:
     
     get:
       summary: travel
-      description: 여행 방 조회 - 자신이 멤버로 포함된 여행만 조회 가능
+      description: |
+        - 여행 방 조회 - 자신이 멤버로 포함된 여행만 조회 가능
+        - 여행 프로필 이미지는 s3 url + key: travel/${uid}/cover.png 를 이용하여 조회
       operationId: travel/get
       tags:
         - travel
@@ -871,6 +932,9 @@ paths:
                     - 2. { travelMemberIdx : ratio } 형태로 입력 가능 (ex 0.2)
                     - 3. 이미 할당된 금액 / 비율 데이터를 삭제하라면 { }(빈 객체)를 보내야 한다.
                     - 입력하지 않은 나머지 멤버들끼리 남은 금액을 N빵한다.
+                usedDate:
+                  type: string
+                  description: YYYY-MM-DDTHH:mm:ss
                 createdDate:
                   type: string
                   description: YYYY-MM-DDTHH:mm:ss+09:00
