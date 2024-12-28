@@ -22,7 +22,7 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
   if (!user) return { statusCode: 404, body: JSON.stringify({ code: 'User_Not_Found' }) };
 
   // 유효하지 않은 token이거나 login 등으로 refresh token 재발급 된 경우
-  if (user.refresh_token !== refreshToken) {
+  if (user.refreshToken !== refreshToken) {
     console.log(`refresh token is not match with DB stored refresh token`);
     return { statusCode: 401, body: JSON.stringify({ code: 'Invalid_Token' }) };
   }
