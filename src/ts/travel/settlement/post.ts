@@ -107,7 +107,9 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
 
   // 3. 송금 리스트 생성
   const settlementList = [];
-  const processSettlement = (sender, receiver, amount, currency?) => {
+  const processSettlement = async (senderIdx: number, receiverIdx: number, amount, currency?) => {
+    const sender = await mysqlUtil.getOne('tb_user', ['idx', 'userName', 'userEmail'], { idx: senderIdx });
+    const receiver = await mysqlUtil.getOne('tb_user', ['idx', 'userName', 'userEmail'], { idx: receiverIdx });
     const settlement = {
       sender,
       receiver,
@@ -131,17 +133,17 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     const receiverTotal = totalByMember[receiver].total;
 
     if (senderTotal === receiverTotal) {
-      processSettlement(sender, receiver, senderTotal);
+      await processSettlement(sender, receiver, senderTotal);
       totalByMember[sender].total = totalByMember[receiver].total = 0;
       sender = senderList.shift();
       receiver = receiverList.shift();
     } else if (receiverTotal > senderTotal) {
-      processSettlement(sender, receiver, senderTotal);
+      await processSettlement(sender, receiver, senderTotal);
       totalByMember[receiver].total -= senderTotal;
       totalByMember[sender].total = 0;
       sender = senderList.shift();
     } else {
-      processSettlement(sender, receiver, receiverTotal);
+      await processSettlement(sender, receiver, receiverTotal);
       totalByMember[sender].total -= receiverTotal;
       totalByMember[receiver].total = 0;
       receiver = receiverList.shift();
@@ -161,17 +163,17 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
       const senderTotal = totalByMember[senderCurrency][currency].total;
       const receiverTotal = totalByMember[receiverCurrency][currency].total;
       if (senderTotal === receiverTotal) {
-        processSettlement(senderCurrency, receiverCurrency, senderTotal, currency);
+        await processSettlement(senderCurrency, receiverCurrency, senderTotal, currency);
         totalByMember[senderCurrency][currency].total = totalByMember[receiverCurrency][currency].total = 0;
         senderCurrency = senderListCurrency[currency].shift();
         receiverCurrency = receiverListCurrency[currency].shift();
       } else if (receiverTotal > senderTotal) {
-        processSettlement(senderCurrency, receiverCurrency, senderTotal, currency);
+        await processSettlement(senderCurrency, receiverCurrency, senderTotal, currency);
         totalByMember[receiverCurrency][currency].total -= senderTotal;
         totalByMember[senderCurrency][currency].total = 0;
         senderCurrency = senderListCurrency[currency].shift();
       } else {
-        processSettlement(senderCurrency, receiverCurrency, receiverTotal, currency);
+        await processSettlement(senderCurrency, receiverCurrency, receiverTotal, currency);
         totalByMember[senderCurrency][currency].total -= receiverTotal;
         totalByMember[receiverCurrency][currency].total = 0;
         receiverCurrency = receiverListCurrency[currency].shift();
