@@ -186,6 +186,8 @@ functions:
       - httpApi:
           path: /token/refresh
           method: delete
+          authorizer: 
+            name: Authorizer
 
   # Travel
   travel_post:
@@ -244,6 +246,12 @@ functions:
           method: post
           authorizer: 
             name: Authorizer
+  travel_invite_get:
+    handler: build/travel/invite/get.handler
+    events:
+      - httpApi:
+          path: /travel/invite
+          method: get
   travel_city_get:
     handler: build/travel/city/get.handler
     events:
@@ -258,6 +266,14 @@ functions:
       - httpApi:
           path: /travel/settlement
           method: post
+          authorizer: 
+            name: Authorizer
+  travel_member_delete:
+    handler: build/travel/member/delete.handler
+    events:
+      - httpApi:
+          path: /travel/member
+          method: delete
           authorizer: 
             name: Authorizer
 
