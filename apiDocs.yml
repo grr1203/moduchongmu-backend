@@ -684,6 +684,32 @@ paths:
                 nullable: true
         '500':
           description: 'code: Internal_Server_Error'
+    get:
+      summary: travel/invite
+      description: |
+        - 여행 초대시 세부 정보 조회
+      operationId: travel/invite/get
+      tags:
+        - travel
+      parameters:
+        - name: travelUid
+          in: query
+          description: 조회할 여행 방의 uid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 초대된 여행 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  travel:
+                    $ref: '#/components/schemas/Travel'
+        '500':
+          description: 'code: Internal_Server_Error'
 
   /travel/member:
     delete:

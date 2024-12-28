@@ -6,16 +6,16 @@ import mysqlUtil from 'src/ts/lib/mysqlUtil';
 const parameter = {
   type: 'object',
   properties: {
-    uid: { type: 'string' },
+    travelUid: { type: 'string' },
   },
-  required: ['uid'],
+  required: ['travelUid'],
 } as const;
 
 export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<{ [key: string]: any }>) => {
   console.log('[event]', event);
-  const { uid } = event.queryStringParameters as FromSchema<typeof parameter>;
+  const { travelUid } = event.queryStringParameters as FromSchema<typeof parameter>;
 
-  const travelData = await mysqlUtil.getOne('tb_travel', [], { uid });
+  const travelData = await mysqlUtil.getOne('tb_travel', [], { uid: travelUid });
   const travel = await formatTravel(travelData as any);
 
   return { statusCode: 200, body: JSON.stringify({ travel }) };
