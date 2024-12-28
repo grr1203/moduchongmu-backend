@@ -20,7 +20,9 @@ export async function formatTravel(travelObject: {
     (member) => member.userIdx
   );
   const memberArray = await mysqlUtil.getMany('tb_user', [], { idx: memberIdxArray });
-  const memberNameArray = memberArray.map((member) => member.userName);
+  const memberNameArray = memberArray.map((member) => {
+    return { idx: member.idx, name: member.userName, email: member.userEmail };
+  });
   const host = memberArray.find((member) => member.idx === travelObject.hostIdx)?.userName;
 
   const travel = {

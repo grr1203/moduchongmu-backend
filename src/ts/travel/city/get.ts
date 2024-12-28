@@ -1,7 +1,7 @@
 import { APIGatewayProxyEventV2WithLambdaAuthorizer } from 'aws-lambda';
 import { FromSchema } from 'json-schema-to-ts';
-import { BucketUrl } from 'src/ts/lib/aws/s3Util';
-import mysqlUtil from 'src/ts/lib/mysqlUtil';
+import { BucketUrl } from '../../lib/aws/s3Util';
+import mysqlUtil from '../../lib/mysqlUtil';
 
 const parameter = {
   type: 'object',

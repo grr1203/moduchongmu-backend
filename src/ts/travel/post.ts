@@ -1,9 +1,10 @@
 import { APIGatewayProxyEventV2WithLambdaAuthorizer } from 'aws-lambda';
 import mysqlUtil from '../lib/mysqlUtil';
 import { FromSchema } from 'json-schema-to-ts';
-import { formatTravel } from '../lib/travel';
+import { formatTravel, getTravelCoverImageKey } from '../lib/travel';
 import { nanoid } from 'nanoid';
 import axios from 'axios';
+import { getPresignedPostUrl } from '../lib/aws/s3Util';
 
 const parameter = {
   type: 'object',
@@ -26,13 +27,21 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   const userIdx = event.requestContext.authorizer.lambda.idx;
 
   // 통화 조회
-  const res = await axios.get(`https://restcountries.com/v3.1/translation/${country}`);
-  const currencyName = Object.keys(res.data[0].currencies)[0] ?? '알수없음';
-  const currencySymbol = res.data[0].currencies[currencyName].symbol ?? '';
+  let currencyName, currencySymbol;
+  try {
+    const res = await axios.get(`https://restcountries.com/v3.1/translation/${country}`);
+    currencyName = Object.keys(res.data[0].currencies)[0] ?? '알수없음';
+    currencySymbol = res.data[0].currencies[currencyName].symbol ?? '';
+  } catch (err) {
+    console.log(`${country} 통화 조회 err`, err);
+    currencyName = '알수없음';
+    currencySymbol = '';
+  }
 
   // 여행 방 생성 및 멤버로 자신 추가
+  const travelUid = nanoid(10)
   const travelIdx = await mysqlUtil.create('tb_travel', {
-    uid: nanoid(10),
+    uid: travelUid,
     hostIdx: userIdx,
     travelName,
     country,
@@ -48,5 +57,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   const travelData = await mysqlUtil.getOne('tb_travel', [], { hostIdx: userIdx, travelName });
   const travel = await formatTravel(travelData as any);
 
-  return { statusCode: 200, body: JSON.stringify({ travel }) };
+  const postingImageUrl = await getPresignedPostUrl(getTravelCoverImageKey(travelUid));
+
+  return { statusCode: 200, body: JSON.stringify({ travel, postingImageUrl }) };
 };

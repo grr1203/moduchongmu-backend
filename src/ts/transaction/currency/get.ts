@@ -31,7 +31,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
       // currency unique하게 조회
       let found = currencyList.find((entry) => entry.currency === item.currency);
       if (!found) {
-        found = { country: [], currency: item.currency, symbol: item.symbol };
+        found = { country: [], currency: item.currency, symbol: item.symbol, name: item.nameKo };
         currencyList.push(found);
       }
 
