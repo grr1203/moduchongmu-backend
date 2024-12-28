@@ -21,6 +21,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   const transactionList = await mysqlUtil.getMany('tb_transaction', [], { travelIdx: travel.idx });
 
   // 1. 멤버별 지출 금액 & 사용 금액 각각 총합 계산
+  console.log('--------*** 1. 멤버별 지출 금액 & 사용 금액 각각 총합 계산 ***--------');
   const totalByMember = travelMemberIdxList.reduce((newObject, idx) => {
     newObject[idx] = { expense: 0, usage: 0, total: 0 };
     return newObject;
@@ -33,6 +34,8 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     const executorList = transaction.executorList.split(',');
     const targetList = transaction.targetList.split(',');
     const transactionCurrency = transaction.currency.split('(')[0];
+    console.log('travel currency', travel.currency.split('(')[0]);
+    console.log('transaction currency', transactionCurrency);
     if (travel.currency.split('(')[0] === transactionCurrency) {
       // 여행 방 통화로 사용한 경우
       executorList.forEach((userIdx) => {
@@ -57,6 +60,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   }
 
   // 2. 반올림 & 총합 계산 -> 송금 할지 / 받을지 결정
+  console.log('--------*** 2. 반올림 & 총합 계산 -> 송금 할지 / 받을지 결정 ***--------');
   const senderList = [];
   const receiverList = [];
   const sameList = [];
@@ -106,6 +110,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   console.log('Currency senderList,receiverList,sameList', senderListCurrency, receiverListCurrency, sameListCurrency);
 
   // 3. 송금 리스트 생성
+  console.log('--------*** 3. 송금 리스트 생성 ***--------');
   const settlementList = [];
   const processSettlement = async (senderIdx: number, receiverIdx: number, amount, currency?) => {
     const sender = await mysqlUtil.getOne('tb_user', ['idx', 'userName', 'userEmail'], { idx: senderIdx });
@@ -129,8 +134,8 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   let sender = senderList.shift();
   let receiver = receiverList.shift();
   for (let i = 0; i < targetLength; i++) {
-    const senderTotal = totalByMember[sender].total;
-    const receiverTotal = totalByMember[receiver].total;
+    const senderTotal = Math.abs(totalByMember[sender].total); 
+    const receiverTotal = Math.abs(totalByMember[receiver].total);
 
     if (senderTotal === receiverTotal) {
       await processSettlement(sender, receiver, senderTotal);
@@ -144,13 +149,13 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
       sender = senderList.shift();
     } else {
       await processSettlement(sender, receiver, receiverTotal);
-      totalByMember[sender].total -= receiverTotal;
+      totalByMember[sender].total += receiverTotal;
       totalByMember[receiver].total = 0;
       receiver = receiverList.shift();
     }
     if (!sender || !receiver) break;
   }
-  console.log('settlementList', settlementList);
+  console.log('settlementList', JSON.stringify(settlementList, null, 2));
 
   // 다른 통화
   const otherCurrencySettlementList = {};
@@ -160,8 +165,10 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     let senderCurrency = senderListCurrency[currency].shift();
     let receiverCurrency = receiverListCurrency[currency].shift();
     for (let i = 0; i < targetLength; i++) {
-      const senderTotal = totalByMember[senderCurrency][currency].total;
-      const receiverTotal = totalByMember[receiverCurrency][currency].total;
+      const senderTotal = Math.abs(totalByMember[senderCurrency][currency].total);
+      const receiverTotal = Math.abs(totalByMember[receiverCurrency][currency].total);
+      console.log('sender, receiver', senderCurrency, receiverCurrency);
+      console.log('senderTotal, receiverTotal', senderTotal, receiverTotal);
       if (senderTotal === receiverTotal) {
         await processSettlement(senderCurrency, receiverCurrency, senderTotal, currency);
         totalByMember[senderCurrency][currency].total = totalByMember[receiverCurrency][currency].total = 0;
@@ -174,16 +181,17 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
         senderCurrency = senderListCurrency[currency].shift();
       } else {
         await processSettlement(senderCurrency, receiverCurrency, receiverTotal, currency);
-        totalByMember[senderCurrency][currency].total -= receiverTotal;
+        totalByMember[senderCurrency][currency].total += receiverTotal;
         totalByMember[receiverCurrency][currency].total = 0;
         receiverCurrency = receiverListCurrency[currency].shift();
       }
       if (!senderCurrency || !receiverCurrency) break;
     }
   }
-  console.log('otherCurrencySettlementList', otherCurrencySettlementList);
+  console.log('otherCurrencySettlementList', JSON.stringify(otherCurrencySettlementList, null, 2));
 
   // 4. 환율 적용 (KRW)
+  console.log('--------*** 4. 환율 적용 (KRW) ***--------');
   const exchangeRate = (
     await mysqlUtil.getOne('tb_transaction_exchange_rate', [], {
       currency: travel.currency.split('(')[0],
@@ -214,6 +222,10 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   // 5. 개인 내역서 & 전체 내역서 생성 (todo)
 
   // 6. pdf 생성 (todo)
+
+  console.log('-------------*** Result ***-------------')
+  console.log('settlementList after exchange', JSON.stringify(settlementList, null, 2));
+  console.log('otherCurrencySettlementList after exchange', JSON.stringify(otherCurrencySettlementList, null, 2));
 
   return { statusCode: 200, body: JSON.stringify({ settlementList, otherCurrencySettlementList }) };
 };
