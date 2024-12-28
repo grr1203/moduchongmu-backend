@@ -37,7 +37,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
   const user = await mysqlUtil.getOne('tb_user', [...USER_JWT_CONTENTS, 'marketingAgreed'], { idx: userIdx });
   delete user.idx;
 
-  const profileImageUrl = profileImage ? await getPresignedPostUrl(getUserProfileImageKey(user.email)) : null;
+  const profileImageUrl = profileImage ? await getPresignedPostUrl(getUserProfileImageKey(user.userEmail)) : null;
 
   return { statusCode: 200, body: JSON.stringify({ user, profileImageUrl }) };
 };
