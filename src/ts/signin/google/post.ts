@@ -8,20 +8,22 @@ import { verifyGoogleCode } from '../../lib/loginUtil';
 const parameter = {
   type: 'object',
   properties: {
-    token: { type: 'string' }, // google에서 발급한 id token
+    token: { type: 'string' }, // google에서 발급한 id token (mobile)
+    code: { type: 'string' }, // google에서 발급한 authorization code (web)
   },
-  required: ['token'],
+  required: [],
 } as const;
 
 export const handler = async (event: APIGatewayProxyEventV2) => {
   console.log('[event]', event);
-  const { token } = JSON.parse(event.body) as FromSchema<typeof parameter>;
+  const { token, code } = JSON.parse(event.body) as FromSchema<typeof parameter>;
 
   try {
     // google server에서 발급한 id token 검증 및 payload 조회
     let userEmail: string;
     try {
-      const { email } = await verifyGoogleCode(token);
+      const redirectUri = `${event.headers.origin}/signin/redirect?type=google`;
+      const { email } = await verifyGoogleCode(token, code, redirectUri);
       userEmail = email;
     } catch (err) {
       console.log('[verifyGoogleCode failed]', err);
@@ -29,7 +31,7 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
     }
 
     let user = await mysqlUtil.getOne('tb_user', [], { userEmail });
-    const processType = !user ? 'signup' : user?.userName ? 'signin': 'signup-ing';
+    const processType = !user ? 'signup' : user?.userName ? 'signin' : 'signup-ing';
     // 회원가입
     if (processType === 'signup') {
       await mysqlUtil.create('tb_user', { userEmail, registerType: USER_REGISTER_TYPE.GOOGLE, marketingAgreed: 1 });

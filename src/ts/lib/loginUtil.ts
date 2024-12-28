@@ -42,7 +42,21 @@ export async function verifyAppleToken(identityToken: string) {
 }
 
 // Google
-export async function verifyGoogleCode(idToken: string) {
+export async function verifyGoogleCode(idToken?: string, code?: string, redirectUri?: string) {
+  if (!idToken && !code) return {};
+  console.log('[verifyGoogleCode] ', idToken, code, redirectUri);
+
+  if (code) {
+    const clientID = '780202279961-6iecooi6h5s4ns3tseitojmaf0rmpth4.apps.googleusercontent.com';
+    const res = await axios.post(
+      `https://oauth2.googleapis.com/token?code=${code}&client_id=${clientID}&client_secret=${process.env.GOOGLE_CLIENT_SECRET}&redirect_uri=${redirectUri}&grant_type=authorization_code`,
+      {},
+      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+    );
+    console.log('[get google token from code]', res.data);
+    idToken = res.data.id_token;
+  }
+
   // ID Token으로 user data 조회
   const res = await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`);
   console.log('[get google user info response]', res);
@@ -79,8 +93,8 @@ export async function verifyKakaoCode(code: string) {
 }
 
 // Naver
-const NAVER_CLIENT_ID = "OVSo8apILt8vu2sS4W8V"
-const NAVER_CLIENT_SECRET = "3FOgn_W_Ub"
+const NAVER_CLIENT_ID = 'OVSo8apILt8vu2sS4W8V';
+const NAVER_CLIENT_SECRET = '3FOgn_W_Ub';
 
 export async function verifyNaverCode(code: string) {
   // Authorization Code로 Access Token 발급

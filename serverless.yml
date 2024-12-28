@@ -48,6 +48,7 @@ provider:
     #   Ref: HttpApi
     JWT_SECRET_KEY: ${ssm:/${self:service}/${env:STAGE, "dev"}/jwt_secret_key}
     API_LAYER_KEY: ${ssm:/${self:service}/${env:STAGE, "dev"}/api_layer_key}
+    GOOGLE_CLIENT_SECRET: ${ssm:/${self:service}/${env:STAGE, "dev"}/google_client_secret}
 
 custom:
   esbuild:
