@@ -7,8 +7,8 @@ export async function formatTransaction(
     uid: string;
     travelIdx: number;
     userIdx: number;
-    executorList: string;
-    targetList: string;
+    executorList: string; // user idx list
+    targetList: string; // user idx list
     category: string;
     content: string;
     type: string;
@@ -21,12 +21,12 @@ export async function formatTransaction(
   }
 ) {
   const recordBy = (await mysqlUtil.getOne('tb_user', ['userName'], { idx: transactionObject.userIdx })).userName;
-  const executorList = (await mysqlUtil.getMany('tb_user', ['userName'], { idx: transactionObject.executorList })).map(
-    (user) => user.userName
-  );
-  const targetList = (await mysqlUtil.getMany('tb_user', ['userName'], { idx: transactionObject.targetList })).map(
-    (user) => user.userName
-  );
+  const executorList = await mysqlUtil.getMany('tb_user', ['idx', 'userName', 'userEmail'], {
+    idx: transactionObject.executorList.split(','),
+  });
+  const targetList = await mysqlUtil.getMany('tb_user', ['idx', 'userName', 'userEmail'], {
+    idx: transactionObject.targetList.split(','),
+  });
 
   const transaction = {
     uid: transactionObject.uid,
