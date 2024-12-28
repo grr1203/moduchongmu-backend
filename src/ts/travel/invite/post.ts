@@ -21,6 +21,10 @@ export const handler = async (event: APIGatewayProxyEventV2WithLambdaAuthorizer<
     (member) => member.userIdx
   );
 
+  // 이미 여행 방에 참여중인지 확인
+  const isExist = await mysqlUtil.getOne('tb_travel_member', [], { travelIdx: travel.idx, userIdx });
+  if (isExist) return { statusCode: 200, body: JSON.stringify({}) };
+
   // 여행 방에 참여
   await mysqlUtil.create('tb_travel_member', { travelIdx: travel.idx, userIdx });
 
